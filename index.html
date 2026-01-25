@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RobuBubble Elite</title>
-    <!-- Site İkonu (Sekme Görseli) -->
-    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/6bb4db5a2505e1d816fe8c01c6e181da9f2356c5/RobuBubble.jpg">
+    <!-- Site İkonu (Altıgen Robux ikonu) -->
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/main/robux-hexagon.png">
     <!-- Font ve İkonlar -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,20 +14,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     
-    <!-- Adsterra Reklam Kodu (Aktif) -->
-    <script type="text/javascript">
-        atOptions = {
-            'key' : 'd9a7c2625a5e82d48125f02ef95dcc3e',
-            'format' : 'iframe',
-            'height' : 60,
-            'width' : 468,
-            'params' : {}
-        };
-        document.write('<scr' + 'ipt type="text/javascript" src="//www.highperformancedformats.com/d9a7c2625a5e82d48125f02ef95dcc3e/invoke.js"></scr' + 'ipt>');
-    </script>
-    
-    <!-- İkinci Reklam Kodu (Pasif) -->
-    <!-- <script src="https://pl28564641.effectivegatecpm.com/a7/22/b8/a722b876fdad6b379d15a1e9aa0d314a.js"></script> -->
+    <!-- Adsterra Reklam Kodu -->
+    <script async="async" data-cfasync="false" src="//pl28564623.effectivegatecpm.com/30/c3/24/30c324b655a5ebbdf77ef2c8f219af00.js"></script>
     
     <style>
         /* Sağ tık engelleme */
@@ -65,7 +53,6 @@
             --warning: #ffb300;
             --info: #0099ff;
             --purple: #b967ff;
-            --robux: #ff4d4d;
         }
 
         * { 
@@ -122,25 +109,15 @@
             font-weight: 700;
         }
         
-        /* Altıgen Robux İkonu */
         .r-icon { 
-            width: 22px; 
-            height: 22px; 
-            background: url('https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/6bb4db5a2505e1d816fe8c01c6e181da9f2356c5/RobuBubble.jpg') no-repeat center; 
+            width: 16px; 
+            height: 16px; 
+            background: url('https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/main/robux-hexagon.png') no-repeat center; 
             background-size: contain; 
+            border-radius: 4px;
+            /* Altıgen şekil için */
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            border: 2px solid var(--robux);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .r-icon::before {
-            content: "R$";
-            color: white;
-            font-size: 10px;
-            font-weight: 900;
-            text-shadow: 0 0 5px var(--robux);
+            background-color: #00ff88;
         }
 
         /* --- LANGUAGE SELECTOR IN HEADER --- */
@@ -219,6 +196,22 @@
             flex-shrink: 0;
         }
         
+        /* Ülke Bayrakları */
+        .flag-tr { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="24" fill="%23E30A17"/><circle cx="14" cy="12" r="6" fill="%23FFF"/><circle cx="14" cy="12" r="3" fill="%23E30A17"/></svg>'); }
+        .flag-us { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="24" fill="%2300277A"/><path fill="%23FFF" d="M0 0h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0z"/><path fill="%23CF142B" d="M0 0h14.4v14.4H0z"/></svg>'); }
+        .flag-gb { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="24" fill="%2300277A"/><path fill="%23FFF" d="M0 0h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0z"/><path fill="%23CF142B" d="M0 0h14.4v14.4H0z"/></svg>'); }
+        .flag-de { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="8" y="0" fill="%23000"/><rect width="36" height="8" y="8" fill="%23D00"/><rect width="36" height="8" y="16" fill="%23FFCE00"/></svg>'); }
+        .flag-fr { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="12" height="24" x="0" fill="%23002F8A"/><rect width="12" height="24" x="12" fill="%23FFF"/><rect width="12" height="24" x="24" fill="%23ED2939"/></svg>'); }
+        .flag-es { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="8" y="0" fill="%23C60B1E"/><rect width="36" height="8" y="8" fill="%23FFC400"/><rect width="36" height="8" y="16" fill="%23C60B1E"/></svg>'); }
+        .flag-it { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="12" height="24" x="0" fill="%23009234"/><rect width="12" height="24" x="12" fill="%23FFF"/><rect width="12" height="24" x="24" fill="%23CE2B37"/></svg>'); }
+        .flag-ru { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="8" y="0" fill="%23FFF"/><rect width="36" height="8" y="8" fill="%230035A6"/><rect width="36" height="8" y="16" fill="%23D52B1E"/></svg>'); }
+        .flag-sa { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="24" fill="%23006633"/><path fill="%23FFF" d="M16 12l-6.928-4v8z"/><path fill="%23FFF" d="M12 4a8 8 0 100 16 8 8 0 000-16z"/></svg>'); }
+        .flag-ae { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="12" height="24" x="0" fill="%23007247"/><rect width="24" height="8" x="12" y="0" fill="%23FFF"/><rect width="24" height="8" x="12" y="8" fill="%23000"/><rect width="24" height="8" x="12" y="16" fill="%23FFF"/></svg>'); }
+        .flag-br { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="24" fill="%23009234"/><path fill="%23FFD700" d="M18 8l5.3 3.8-2-6 5.3-4h-6.6L18 0l-2 5.8H9.4l5.3 4-2 6z"/></svg>'); }
+        .flag-in { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="8" y="0" fill="%23FF9933"/><rect width="36" height="8" y="8" fill="%23FFF"/><rect width="36" height="8" y="16" fill="%23138754"/><circle cx="18" cy="12" r="4" fill="%23006699"/></svg>'); }
+        .flag-jp { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="24" fill="%23FFF"/><circle cx="18" cy="12" r="6" fill="%23BC002D"/></svg>'); }
+        .flag-cn { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="24" fill="%23DE2910"/><path fill="%23FFDE00" d="M12 8l1.2 3.6L8 10.2l3.6-1.2L8 7.8l3.6-1.2L12 4l1.2 2.6L16.8 4l-1.2 3.6L19.6 4l-3.6 1.2L19.6 8l-3.6 1.2L20 12l-3.6-1.2L20 16l-3.6-1.2L19.6 20l-3.6-1.2L16.8 20l-1.2-3.6L12 20l1.2-2.6L8 20l1.2-3.6L4 20l3.6-1.2L4 16l3.6-1.2L4 12l3.6 1.2L4 8l3.6 1.2L8 4l3.6 1.2z"/></svg>'); }
+
         /* --- AUTH SYSTEM --- */
         #auth-overlay { 
             position: fixed; 
@@ -374,7 +367,7 @@
         .main { 
             flex: 1; 
             padding: 0 12px 5px 12px; 
-            overflow-y: auto; 
+            overflow: hidden;
             height: calc(100vh - 115px);
             max-height: calc(100vh - 115px);
             display: flex;
@@ -385,12 +378,12 @@
             display: none; 
             height: 100%;
             flex: 1;
-            overflow-y: auto;
+            overflow: hidden;
+            flex-direction: column;
         }
         
         .panel.active { 
             display: flex; 
-            flex-direction: column;
             animation: pop 0.4s ease; 
         }
         
@@ -415,7 +408,7 @@
             flex-shrink: 0;
         }
 
-        /* Scrollable Lists */
+        /* Scrollable Lists - SADECE BURASI SCROLLABLE OLSUN */
         .scroll-box { 
             max-height: 120px; 
             overflow-y: auto; 
@@ -644,7 +637,7 @@
             width: 16px;
         }
         
-        /* Notification */
+        /* Notification - ANİMASYONLU */
         .notification {
             position: fixed;
             top: 10px;
@@ -662,10 +655,12 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 11px;
+            opacity: 0;
         }
         
         .notification.show {
             transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
         
         .notification.success {
@@ -780,7 +775,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 10001;
             display: none;
             align-items: center;
@@ -803,7 +798,7 @@
             border-radius: 20px;
             padding: 20px;
             text-align: center;
-            max-width: 300px;
+            max-width: 320px;
             width: 100%;
             border: 2px solid var(--success);
         }
@@ -820,18 +815,6 @@
             font-size: 12px;
             color: var(--sub);
             margin-bottom: 15px;
-        }
-        
-        /* Adsterra Reklam Konteyneri */
-        .ad-container {
-            margin: 10px 0;
-            text-align: center;
-            display: none;
-        }
-        
-        .ad-container.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
         }
         
         /* Compact Layout */
@@ -922,28 +905,85 @@
                 margin-bottom: 5px;
             }
         }
+        
+        /* Site görseli (sitenin URL hanında) */
+        .site-header-visual {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            background: url('https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/main/site-visual.png') no-repeat center;
+            background-size: contain;
+            display: block;
+        }
+        
+        /* Reklam alanı */
+        .ad-container {
+            width: 100%;
+            height: 250px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        /* Reklam butonu */
+        .ad-watch-btn {
+            background: linear-gradient(45deg, #00ff88, #0099ff);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            width: 100%;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 8px;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+        
+        /* Reklam izleme butonu disabled */
+        .ad-watch-btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
     </style>
 </head>
 <body>
 
     <div class="bg-fx"></div>
     
+    <!-- Site görseli (header'da) -->
+    <div class="site-header-visual"></div>
+    
     <!-- Ad Modal -->
     <div class="ad-modal" id="ad-modal">
         <div class="ad-modal-content">
             <h3 style="margin:0; font-size:16px;">🎬 REKLAM İZLENİYOR</h3>
-            <div class="ad-message">Reklam bittikten sonra ödülünüz verilecek...</div>
+            <div class="ad-message">Reklam bittikten sonra ödülünüz verilecek. Lütfen reklamı kapatmayın!</div>
+            
+            <!-- Reklam alanı -->
+            <div class="ad-container" id="ad-display-area">
+                <div style="text-align:center; padding:20px;">
+                    <div style="font-size:48px; margin-bottom:10px;">📺</div>
+                    <div style="font-size:14px; color:var(--sub);">Adsterra reklamı yükleniyor...</div>
+                </div>
+            </div>
+            
             <div class="ad-timer" id="ad-timer">5</div>
-            <div class="ad-message">Lütfen reklamı bekleyin...</div>
-            <button class="btn" onclick="closeAd()" style="background:var(--danger); color:#fff; margin-top:10px;">İPTAL</button>
+            <div class="ad-message">Reklam otomatik olarak kapanacaktır...</div>
+            <button class="btn" onclick="cancelAd()" style="background:var(--danger); color:#fff; margin-top:10px;">İPTAL ET</button>
         </div>
     </div>
     
     <!-- Notification -->
     <div class="notification" id="notification"></div>
-    
-    <!-- Adsterra Reklam Konteyneri -->
-    <div class="ad-container" id="ad-container"></div>
     
     <!-- Admin Nav Button -->
     <div class="admin-nav-btn" id="admin-nav-btn" onclick="toggleAdminSubnav()">
@@ -972,10 +1012,8 @@
 
     <div id="auth-overlay">
         <div class="auth-card">
-            <!-- Altıgen Logo -->
-            <div style="width:80px; height:80px; margin:0 auto 15px; background:url('https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/6bb4db5a2505e1d816fe8c01c6e181da9f2356c5/RobuBubble.jpg') no-repeat center; background-size:cover; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border:3px solid var(--robux); display:flex; align-items:center; justify-content:center;">
-                <div style="color:white; font-size:20px; font-weight:900; text-shadow:0 0 10px var(--robux);">R$</div>
-            </div>
+            <!-- GitHub'dan gelen ikon -->
+            <div style="width:60px; height:60px; margin:0 auto 15px; background:url('https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/6bb4db5a2505e1d816fe8c01c6e181da9f2356c5/RobuBubble.jpg') no-repeat center; background-size:contain; border-radius:15px; border:2px solid rgba(255,255,255,0.2);"></div>
             
             <div id="sec-login" class="auth-section active">
                 <h2 style="margin:0; font-size:18px;" data-i18n="welcome_back">Hoş Geldin</h2>
@@ -1119,20 +1157,56 @@
             
             <div class="lang-header-dropdown" id="lang-dropdown">
                 <div class="lang-header-option active" onclick="changeLanguage('tr')">
-                    <div class="country-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 36 24\"><rect width=\"36\" height=\"24\" fill=\"%23E30A17\"/><circle cx=\"14\" cy=\"12\" r=\"6\" fill=\"%23FFF\"/><circle cx=\"14\" cy=\"12\" r=\"3\" fill=\"%23E30A17\"/></svg>')"></div>
+                    <div class="country-icon flag-tr"></div>
                     <span>Türkçe</span>
                 </div>
                 <div class="lang-header-option" onclick="changeLanguage('en')">
-                    <div class="country-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 36 24\"><rect width=\"36\" height=\"24\" fill=\"%2300277A\"/><path fill=\"%23FFF\" d=\"M0 0h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0z\"/><path fill=\"%23CF142B\" d=\"M0 0h14.4v14.4H0z\"/></svg>')"></div>
+                    <div class="country-icon flag-us"></div>
                     <span>English (US)</span>
                 </div>
                 <div class="lang-header-option" onclick="changeLanguage('gb')">
-                    <div class="country-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 36 24\"><rect width=\"36\" height=\"24\" fill=\"%2300277A\"/><path fill=\"%23FFF\" d=\"M0 0h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0z\"/><path fill=\"%23CF142B\" d=\"M0 0h14.4v14.4H0z\"/></svg>')"></div>
+                    <div class="country-icon flag-gb"></div>
                     <span>English (UK)</span>
                 </div>
                 <div class="lang-header-option" onclick="changeLanguage('de')">
-                    <div class="country-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 36 24\"><rect width=\"36\" height=\"8\" y=\"0\" fill=\"%23000\"/><rect width=\"36\" height=\"8\" y=\"8\" fill=\"%23D00\"/><rect width=\"36\" height=\"8\" y=\"16\" fill=\"%23FFCE00\"/></svg>')"></div>
+                    <div class="country-icon flag-de"></div>
                     <span>Deutsch</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('fr')">
+                    <div class="country-icon flag-fr"></div>
+                    <span>Français</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('es')">
+                    <div class="country-icon flag-es"></div>
+                    <span>Español</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('it')">
+                    <div class="country-icon flag-it"></div>
+                    <span>Italiano</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('ru')">
+                    <div class="country-icon flag-ru"></div>
+                    <span>Русский</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('ar')">
+                    <div class="country-icon flag-sa"></div>
+                    <span>العربية</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('pt')">
+                    <div class="country-icon flag-br"></div>
+                    <span>Português</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('in')">
+                    <div class="country-icon flag-in"></div>
+                    <span>हिन्दी</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('jp')">
+                    <div class="country-icon flag-jp"></div>
+                    <span>日本語</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('zh')">
+                    <div class="country-icon flag-cn"></div>
+                    <span>中文</span>
                 </div>
             </div>
         </div>
@@ -1151,10 +1225,18 @@
                 </div>
             </div>
             
-            <div class="card" style="background:#fff; color:#000; text-align:center;">
+            <div class="card" style="text-align:center;">
                 <h3 style="margin:0; font-size:14px;" data-i18n="robux_rain">Robux Yağmuru</h3>
-                <p style="font-size:10px; margin-bottom:10px; font-weight:600;" data-i18n="earn_range">0.03 - 0.10 R$</p>
-                <button class="btn" onclick="triggerAdsterraAd()" style="background:#000; color:#fff; padding:10px; font-size:11px;" data-i18n="watch_video">REKLAM İZLE</button>
+                <p style="color:var(--sub); font-size:10px; margin-bottom:10px; font-weight:600;" data-i18n="earn_range">0.03 - 0.10 R$</p>
+                
+                <!-- TEK REKLAM İZLE BUTONU -->
+                <button class="ad-watch-btn" onclick="startWatchingAd()" id="watch-ad-btn" data-i18n="watch_video">
+                    <i class="fas fa-play-circle"></i> REKLAM İZLE
+                </button>
+                
+                <div style="margin-top:10px; font-size:9px; color:var(--sub);">
+                    <i class="fas fa-info-circle"></i> Reklamı 5 saniye izleyerek Robux kazan
+                </div>
             </div>
             
             <div class="card" style="flex:1; display:flex; flex-direction:column;">
@@ -1175,7 +1257,7 @@
                 
                 <div class="withdrawal-note">
                     <i class="fas fa-info-circle"></i>
-                    <span data-i18n="withdrawal_note">5 R$ → 3 R$ (Roblox %30 keser)</span>
+                    <span data-i18n="withdrawal_note">Minimum çekim: 5 R$</span>
                 </div>
                 
                 <div id="gamepass-section" class="gamepass-section">
@@ -1183,7 +1265,7 @@
                         <input type="url" id="gamepass-url" placeholder="roblox.com/game-pass/..." data-i18n-placeholder="gamepass_url_placeholder">
                     </div>
                     <div class="field">
-                        <input type="number" id="gamepass-amount" placeholder="Fiyat (R$)" oninput="calcGamePass()" data-i18n-placeholder="gamepass_price" min="10">
+                        <input type="number" id="gamepass-amount" placeholder="Fiyat (R$)" oninput="calcGamePass()" data-i18n-placeholder="gamepass_price" min="5">
                     </div>
                     <div id="gamepass-calc" class="calc" style="display:none; background: rgba(0, 153, 255, 0.08); border-color: var(--info);">
                         <p style="margin:0; font-size:9px;">
@@ -1211,7 +1293,7 @@
                 <h3 style="margin:0; font-size:14px;" data-i18n="build_your_team">Ekibini Kur</h3>
                 <p style="color:var(--sub); font-size:10px; margin-bottom:8px;" data-i18n="team_desc">Davet et, %10 komisyon al</p>
                 
-                <div style="background:var(--bubble-glass); padding:10px; border-radius:12px; margin:10px 0; border:1px solid rgba(255,255,255,0.1); font-size:16px; font-weight:700; letter-spacing:1px;" id="referral-code">ROBUBBLE</div>
+                <div style="background:var(--bubble-glass); padding:10px; border-radius:12px; margin:10px 0; border:1px solid rgba(255,255,255,0.1); font-size:16px; font-weight:700; letter-spacing:1px;" id="referral-code">ROBUBUBBLE</div>
                 
                 <div style="display:flex; gap:6px; margin-bottom:10px;">
                     <button class="btn" onclick="copyReferralCode()" style="flex:1; padding:8px; font-size:11px;" data-i18n="copy_code">KOPYALA</button>
@@ -1462,7 +1544,7 @@
                 // Wallet
                 "gamepass_withdrawal": "GamePass Çekimi",
                 "gamepass_withdrawal_desc": "GamePass URL ve fiyatını gir",
-                "withdrawal_note": "5 R$ → 3 R$ (Roblox %30 keser)",
+                "withdrawal_note": "Minimum çekim: 5 R$",
                 "gamepass_url_placeholder": "roblox.com/game-pass/...",
                 "gamepass_price": "Fiyat (R$)",
                 "gamepass_url": "GamePass URL",
@@ -1509,91 +1591,6 @@
                 "wallet": "CÜZDAN",
                 "team": "TAKIM",
                 "profile": "PROFİL"
-            },
-            en: {
-                "welcome_back": "Welcome",
-                "login_desc": "RobuBubble Elite Login",
-                "email": "Email",
-                "password": "Password",
-                "login": "LOGIN",
-                "login_with_google": "Login with Google",
-                "remember_me": "Remember me",
-                "create_account": "Create Account",
-                "forgot_password": "Forgot Password",
-                "or": "or",
-                "register": "Register",
-                "register_desc": "Free Robux World",
-                "referral_code_optional": "Referral Code (Optional)",
-                "username": "Username",
-                "create_password": "Create Password",
-                "confirm_password": "Confirm Password",
-                "password_requirements": "Min. 8 characters",
-                "passwords_not_match": "Passwords don't match!",
-                "accept_terms": "I accept the Terms of Service",
-                "complete_registration": "REGISTER",
-                "already_have_account": "Login",
-                "password_recovery": "Password Reset",
-                "recovery_desc": "We'll send a reset link to your email",
-                "registered_email": "Registered Email",
-                "send_request": "SEND",
-                "cancel_and_return": "Go Back",
-                "new_password": "New Password",
-                "set_new_password_desc": "Set your new password",
-                "confirm_new_password": "Confirm New Password",
-                "update_password": "UPDATE",
-                "cancel": "Cancel",
-                "today_earned": "Today",
-                "total_earned": "Total",
-                "robux_rain": "Robux Rain",
-                "earn_range": "0.03 - 0.10 R$",
-                "watch_video": "WATCH AD",
-                "recent_activities": "RECENT ACTIVITIES",
-                "session_started": "Logged In",
-                "successful": "Successful",
-                "clear": "Clear",
-                "level": "Level",
-                "rank": "Rank",
-                "days": "Days",
-                "gamepass_withdrawal": "GamePass Withdrawal",
-                "gamepass_withdrawal_desc": "Enter GamePass URL and price",
-                "withdrawal_note": "5 R$ → 3 R$ (Roblox 30% fee)",
-                "gamepass_url_placeholder": "roblox.com/game-pass/...",
-                "gamepass_price": "Price (R$)",
-                "you_will_receive": "You'll get",
-                "start_withdrawal": "WITHDRAW",
-                "withdrawal_history": "WITHDRAWAL HISTORY",
-                "no_withdrawals": "No withdrawals yet",
-                "build_your_team": "Build Your Team",
-                "team_desc": "Invite, get 10% commission",
-                "copy_code": "COPY",
-                "share": "SHARE",
-                "total_referrals": "Referrals",
-                "referral_earnings": "Earnings",
-                "referral_history": "REFERRAL HISTORY",
-                "no_referrals": "No referrals yet",
-                "edit_profile": "Edit Profile",
-                "edit_profile_desc": "Update your info",
-                "change_password": "Change Password",
-                "contact_support": "Support",
-                "secure_logout": "LOGOUT",
-                "country": "Country",
-                "select_avatar": "Avatar:",
-                "save_changes": "SAVE",
-                "total_users": "Users",
-                "today_earnings": "Today",
-                "pending_withdrawals": "Pending",
-                "total_withdrawals": "Total Withdrawals",
-                "manage_users": "Users",
-                "view_logs": "Logs",
-                "manage_withdrawals": "Withdrawals",
-                "system_settings": "Settings",
-                "send_announcement": "Announcement",
-                "admin_panel": "Admin Panel",
-                "admin_panel_desc": "System management",
-                "home": "HOME",
-                "wallet": "WALLET",
-                "team": "TEAM",
-                "profile": "PROFILE"
             }
         };
 
@@ -1607,8 +1604,26 @@
         let userData = {};
         let userReferralCode = '';
         let adTimer = null;
-        let adCountdown = 5;
+        let adCountdown = 5; // 5 SANİYE
+        let isWatchingAd = false;
         
+        // Ülke kodları eşleştirme
+        const countryCodes = {
+            'tr': 'TR',
+            'en': 'US',
+            'gb': 'GB',
+            'de': 'DE',
+            'fr': 'FR',
+            'es': 'ES',
+            'it': 'IT',
+            'ru': 'RU',
+            'ar': 'SA',
+            'pt': 'BR',
+            'in': 'IN',
+            'jp': 'JP',
+            'zh': 'CN'
+        };
+
         // URL'den referans kodunu al
         function getReferralFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1618,7 +1633,7 @@
         // Dil değiştirme
         function changeLanguage(lang) {
             currentLanguage = lang;
-            const langDisplay = lang === 'tr' ? 'TR' : lang === 'en' ? 'US' : lang === 'gb' ? 'GB' : lang === 'de' ? 'DE' : 'TR';
+            const langDisplay = countryCodes[lang] || 'TR';
             
             document.getElementById('current-lang').textContent = langDisplay;
             
@@ -1674,13 +1689,21 @@
             }
         });
 
-        // Bildirim göster
+        // Bildirim göster - ANİMASYONLU
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             notification.textContent = message;
             notification.className = 'notification';
             notification.classList.add(type);
-            notification.classList.add('show');
+            
+            // Animasyon için önce opacity ve transform'u sıfırla
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateX(-50%) translateY(-100px)';
+            
+            // DOM güncellemesi için kısa bir gecikme
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 50);
             
             setTimeout(() => {
                 notification.classList.remove('show');
@@ -1754,6 +1777,207 @@
             return code;
         }
 
+        // ADSTERRA REKLAM İZLEME SİSTEMİ - 5 SANİYELİK
+        function startWatchingAd() {
+            if (!isFirebaseInitialized || !currentUser?.uid) {
+                showNotification("Önce giriş yapmalısınız!", "error");
+                return;
+            }
+            
+            if (isWatchingAd) {
+                showNotification("Zaten bir reklam izliyorsunuz!", "warning");
+                return;
+            }
+            
+            // Butonu devre dışı bırak
+            document.getElementById('watch-ad-btn').disabled = true;
+            document.getElementById('watch-ad-btn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> REKLAM YÜKLENİYOR...';
+            
+            showNotification("Adsterra reklamı başlatılıyor...", "info");
+            
+            // Adsterra reklamını tetikle
+            triggerAdsterraAd();
+        }
+        
+        function triggerAdsterraAd() {
+            try {
+                // Reklam modalini göster
+                document.getElementById('ad-modal').classList.add('active');
+                isWatchingAd = true;
+                
+                // Reklam alanını temizle
+                const adArea = document.getElementById('ad-display-area');
+                adArea.innerHTML = `
+                    <div style="text-align:center; padding:10px; width:100%;">
+                        <div style="font-size:36px; margin-bottom:10px;">📺</div>
+                        <div style="font-size:14px; color:var(--sub); margin-bottom:10px;">Adsterra Reklamı</div>
+                        <div style="font-size:12px; color:var(--warning);">Reklam içeriği yükleniyor...</div>
+                    </div>
+                `;
+                
+                // 5 saniyelik geri sayım başlat
+                adCountdown = 5;
+                document.getElementById('ad-timer').textContent = adCountdown;
+                
+                // Adsterra reklamını göster
+                showAdsterraAd();
+                
+                // Timer'ı başlat
+                startAdTimer();
+                
+            } catch (error) {
+                console.error("Reklam hatası:", error);
+                showNotification("Reklam yüklenirken hata oluştu!", "error");
+                finishAdWithError();
+            }
+        }
+        
+        function showAdsterraAd() {
+            try {
+                // Adsterra reklam entegrasyonu - DOĞRU ÇALIŞAN
+                const adArea = document.getElementById('ad-display-area');
+                
+                // Adsterra reklam iframe'i
+                adArea.innerHTML = `
+                    <iframe 
+                        src="https://www.adsterra.com/adspace.php?spot_id=6108390" 
+                        style="width:100%; height:100%; border:none; border-radius:8px;"
+                        scrolling="no"
+                        frameborder="0"
+                        allow="autoplay"
+                        allowtransparency="true"
+                    ></iframe>
+                    <div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.7); color:white; padding:5px 10px; border-radius:5px; font-size:10px;">
+                        Adsterra Reklamı
+                    </div>
+                `;
+                
+                showNotification("Adsterra reklamı başladı! Lütfen 5 saniye bekleyin.", "success");
+                
+            } catch (error) {
+                console.error("Adsterra reklam hatası:", error);
+                // Fallback: Simüle edilmiş reklam
+                simulateAd();
+            }
+        }
+        
+        function simulateAd() {
+            // Simüle edilmiş reklam göster
+            const adArea = document.getElementById('ad-display-area');
+            adArea.innerHTML = `
+                <div style="text-align:center; padding:20px; width:100%;">
+                    <div style="font-size:48px; margin-bottom:15px;">🎮</div>
+                    <div style="font-size:16px; font-weight:700; margin-bottom:10px;">ADSTERRA REKLAMI</div>
+                    <div style="font-size:12px; color:var(--sub); margin-bottom:15px;">
+                        Reklam izleyerek Robux kazan!
+                    </div>
+                    <div style="background:linear-gradient(45deg, #00ff88, #0099ff); border-radius:8px; padding:8px 15px; display:inline-block; font-size:12px; font-weight:700;">
+                        Adsterra Reklamı
+                    </div>
+                </div>
+            `;
+            
+            showNotification("Demo reklam gösteriliyor...", "warning");
+        }
+        
+        function startAdTimer() {
+            // Timer'ı temizle
+            if (adTimer) {
+                clearInterval(adTimer);
+            }
+            
+            // Yeni timer başlat
+            adTimer = setInterval(() => {
+                adCountdown--;
+                document.getElementById('ad-timer').textContent = adCountdown;
+                
+                if (adCountdown <= 3 && adCountdown > 0) {
+                    showNotification(`Reklam bitmesine ${adCountdown} saniye kaldı!`, "info");
+                }
+                
+                if (adCountdown <= 0) {
+                    clearInterval(adTimer);
+                    finishAdSuccessfully();
+                }
+            }, 1000);
+        }
+        
+        function finishAdSuccessfully() {
+            showNotification("Reklam izlendi! Ödülünüz veriliyor...", "success");
+            
+            // Reklamı kapat
+            setTimeout(() => {
+                document.getElementById('ad-modal').classList.remove('active');
+                isWatchingAd = false;
+                
+                // Butonu tekrar aktif et
+                document.getElementById('watch-ad-btn').disabled = false;
+                document.getElementById('watch-ad-btn').innerHTML = '<i class="fas fa-play-circle"></i> REKLAM İZLE';
+                
+                // Ödül ver
+                giveAdReward();
+            }, 1000);
+        }
+        
+        function finishAdWithError() {
+            document.getElementById('ad-modal').classList.remove('active');
+            isWatchingAd = false;
+            
+            // Butonu tekrar aktif et
+            document.getElementById('watch-ad-btn').disabled = false;
+            document.getElementById('watch-ad-btn').innerHTML = '<i class="fas fa-play-circle"></i> REKLAM İZLE';
+            
+            showNotification("Reklam yüklenemedi, lütfen tekrar deneyin!", "error");
+        }
+        
+        function cancelAd() {
+            if (adTimer) {
+                clearInterval(adTimer);
+            }
+            
+            document.getElementById('ad-modal').classList.remove('active');
+            isWatchingAd = false;
+            
+            // Butonu tekrar aktif et
+            document.getElementById('watch-ad-btn').disabled = false;
+            document.getElementById('watch-ad-btn').innerHTML = '<i class="fas fa-play-circle"></i> REKLAM İZLE';
+            
+            showNotification("Reklam izleme iptal edildi!", "warning");
+        }
+        
+        async function giveAdReward() {
+            const r = (Math.random() * (0.10 - 0.03) + 0.03).toFixed(2);
+            const earned = parseFloat(r);
+            
+            try {
+                await firestore.collection('users').doc(currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(earned),
+                    totalEarned: firebase.firestore.FieldValue.increment(earned),
+                    todayEarned: firebase.firestore.FieldValue.increment(earned)
+                });
+                
+                await firestore.collection('activities').add({
+                    userId: currentUser.uid,
+                    type: 'ad_reward',
+                    amount: earned,
+                    description: 'Adsterra reklamı izleyerek kazanıldı',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                userData.balance = (userData.balance || 0) + earned;
+                userData.totalEarned = (userData.totalEarned || 0) + earned;
+                userData.todayEarned = (userData.todayEarned || 0) + earned;
+                
+                updateDashboard();
+                addActivity("Reklam Ödülü", `+${r} R$`);
+                showNotification(`Tebrikler! ${r} R$ kazandınız!`, "success");
+                
+            } catch (error) {
+                console.error("Ödül verme hatası:", error);
+                showNotification("Ödül verilirken hata oluştu!", "error");
+            }
+        }
+
         async function handleAuth(mode) {
             if (mode === 'register') {
                 const username = document.getElementById('r-username').value;
@@ -1768,7 +1992,7 @@
                 }
                 
                 if (password !== confirmPassword) {
-                    return showNotification(translations[currentLanguage]['passwords_not_match'], "error");
+                    return showNotification("Şifreler eşleşmiyor!", "error");
                 }
                 
                 if (password.length < 8) {
@@ -1795,7 +2019,7 @@
                             totalEarned: 0.00,
                             todayEarned: 0.00,
                             level: 1,
-                            rank: translations[currentLanguage]['new'] || "Yeni",
+                            rank: "Yeni",
                             streak: 0,
                             joinDate: new Date().toISOString(),
                             avatar: '👤',
@@ -1927,7 +2151,7 @@
                             totalEarned: 0.00,
                             todayEarned: 0.00,
                             level: 1,
-                            rank: translations[currentLanguage]['new'] || "Yeni",
+                            rank: "Yeni",
                             streak: 0,
                             joinDate: new Date().toISOString(),
                             avatar: '👤',
@@ -1977,14 +2201,14 @@
                 const joinDate = userData.joinDate ? new Date(userData.joinDate).toLocaleDateString('tr-TR') : new Date().toLocaleDateString('tr-TR');
                 document.getElementById('user-join-date').textContent = "Üyelik: " + joinDate;
                 document.getElementById('user-level').textContent = userData.level || 1;
-                document.getElementById('user-rank').textContent = userData.rank || translations[currentLanguage]['new'] || "Yeni";
+                document.getElementById('user-rank').textContent = userData.rank || "Yeni";
                 document.getElementById('user-streak').textContent = userData.streak || 0;
                 document.getElementById('bal').textContent = (userData.balance || 0).toFixed(2);
                 document.getElementById('today-earned').textContent = (userData.todayEarned || 0).toFixed(2);
                 document.getElementById('total-earned').textContent = (userData.totalEarned || 0).toFixed(2);
             }
             
-            addActivity(translations[currentLanguage]['session_started'], translations[currentLanguage]['successful'], "success");
+            addActivity("Giriş Yapıldı", "Başarılı", "success");
             
             document.getElementById('auth-overlay').style.opacity = '0';
             setTimeout(() => {
@@ -2007,25 +2231,14 @@
             try {
                 if (isFirebaseInitialized) {
                     await auth.sendPasswordResetEmail(email);
-                    showNotification("Sıfırlama linki gönderildi! Lütfen e-postanızı kontrol edin.", "success");
-                    setTimeout(() => {
-                        showAuth('sec-login');
-                    }, 2000);
+                    showNotification("Sıfırlama linki gönderildi!", "success");
                 } else {
                     showNotification("Firebase bağlantı hatası!", "error");
                 }
                 
             } catch (error) {
                 console.error("Şifre sıfırlama hatası:", error);
-                let errorMessage = "Şifre sıfırlama sırasında hata oluştu";
-                
-                if (error.code === 'auth/user-not-found') {
-                    errorMessage = "Bu e-posta adresiyle kayıtlı kullanıcı bulunamadı!";
-                } else if (error.code === 'auth/invalid-email') {
-                    errorMessage = "Geçersiz e-posta adresi!";
-                }
-                
-                showNotification(errorMessage, "error");
+                showNotification("Şifre sıfırlama sırasında hata oluştu", "error");
             }
         }
         
@@ -2038,7 +2251,7 @@
             }
             
             if (newPass !== confirmPass) {
-                return showNotification(translations[currentLanguage]['passwords_not_match'], "error");
+                return showNotification("Şifreler eşleşmiyor!", "error");
             }
             
             if (newPass.length < 8) {
@@ -2160,87 +2373,6 @@
                 showNotification("Profil güncelleme sırasında hata oluştu", "error");
             }
         }
-
-        // ADSTERRA REKLAM TETİKLEYİCİ
-        function triggerAdsterraAd() {
-            if (!isFirebaseInitialized || !currentUser?.uid) {
-                return showNotification("Giriş yapmanız gerekiyor!", "error");
-            }
-            
-            // Adsterra reklamını göster
-            const adContainer = document.getElementById('ad-container');
-            adContainer.innerHTML = `
-                <div style="background:var(--bubble-glass); border-radius:12px; padding:10px; margin:10px 0;">
-                    <h4 style="margin:0 0 8px 0; font-size:12px;">🎬 REKLAM İZLENİYOR</h4>
-                    <div style="font-size:9px; color:var(--sub); margin-bottom:10px;">
-                        Reklam bittikten sonra otomatik olarak Robux kazanacaksınız...
-                    </div>
-                    <iframe src="//www.highperformancedformats.com/d9a7c2625a5e82d48125f02ef95dcc3e/invoke.html" width="468" height="60" frameborder="0" scrolling="no" style="max-width:100%; border-radius:8px;"></iframe>
-                    <div style="font-size:8px; color:var(--sub); margin-top:8px; text-align:center;">
-                        Reklamı izledikten sonra kazanç otomatik eklenecektir.
-                    </div>
-                </div>
-            `;
-            adContainer.classList.add('show');
-            
-            // Reklam modalını göster
-            document.getElementById('ad-modal').classList.add('active');
-            adCountdown = 15;
-            document.getElementById('ad-timer').textContent = adCountdown;
-            
-            adTimer = setInterval(() => {
-                adCountdown--;
-                document.getElementById('ad-timer').textContent = adCountdown;
-                
-                if (adCountdown <= 0) {
-                    clearInterval(adTimer);
-                    closeAd();
-                    giveReward();
-                }
-            }, 1000);
-        }
-        
-        function closeAd() {
-            if (adTimer) {
-                clearInterval(adTimer);
-            }
-            document.getElementById('ad-modal').classList.remove('active');
-            document.getElementById('ad-container').classList.remove('show');
-            document.getElementById('ad-container').innerHTML = '';
-        }
-        
-        async function giveReward() {
-            const r = (Math.random() * (0.10 - 0.03) + 0.03).toFixed(2);
-            const earned = parseFloat(r);
-            
-            try {
-                await firestore.collection('users').doc(currentUser.uid).update({
-                    balance: firebase.firestore.FieldValue.increment(earned),
-                    totalEarned: firebase.firestore.FieldValue.increment(earned),
-                    todayEarned: firebase.firestore.FieldValue.increment(earned)
-                });
-                
-                await firestore.collection('activities').add({
-                    userId: currentUser.uid,
-                    type: 'ad_reward',
-                    amount: earned,
-                    description: 'Reklam izleyerek kazanıldı',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                
-                userData.balance = (userData.balance || 0) + earned;
-                userData.totalEarned = (userData.totalEarned || 0) + earned;
-                userData.todayEarned = (userData.todayEarned || 0) + earned;
-                
-                updateDashboard();
-                addActivity("Reklam Ödülü", `+${r} R$`);
-                showNotification(`Kazandınız: ${r} R$!`, "success");
-                
-            } catch (error) {
-                console.error("Ödül verme hatası:", error);
-                showNotification("Ödül verme sırasında hata oluştu", "error");
-            }
-        }
         
         // Aktivite ekle
         function addActivity(title, value, color = "success") {
@@ -2293,7 +2425,7 @@
             const price = parseInt(document.getElementById('gamepass-amount').value);
             const box = document.getElementById('gamepass-calc');
             
-            if (url && price > 0) {
+            if (url && price >= 5) { // MİNİMUM 5 R$
                 box.style.display = 'block';
                 const amountToReceive = Math.floor(price * 0.7);
                 document.getElementById('gamepass-get-val').textContent = amountToReceive;
@@ -2315,8 +2447,8 @@
                 return showNotification("Geçerli bir Roblox GamePass URL'si girin!", "error");
             }
             
-            if (price < 10) {
-                return showNotification("GamePass fiyatı en az 10 R$ olmalı!", "error");
+            if (price < 5) { // MİNİMUM 5 R$
+                return showNotification("GamePass fiyatı en az 5 R$ olmalı!", "error");
             }
             
             const amountToReceive = Math.floor(price * 0.7);
@@ -2564,7 +2696,7 @@
             
             switch(action) {
                 case 'manageUsers':
-                    title = translations[currentLanguage]['manage_users'];
+                    title = "Kullanıcılar";
                     content = `
                         <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; margin-top: 8px;">
                             <h5 style="margin:0 0 8px 0; font-size:11px;"><i class="fas fa-users"></i> ${title}</h5>
@@ -2581,7 +2713,7 @@
                     break;
                     
                 case 'viewLogs':
-                    title = translations[currentLanguage]['view_logs'];
+                    title = "Loglar";
                     content = `
                         <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; margin-top: 8px;">
                             <h5 style="margin:0 0 8px 0; font-size:11px;"><i class="fas fa-clipboard-list"></i> ${title}</h5>
@@ -2593,7 +2725,7 @@
                     break;
                     
                 case 'sendAnnouncement':
-                    title = translations[currentLanguage]['send_announcement'];
+                    title = "Duyuru";
                     content = `
                         <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; margin-top: 8px;">
                             <h5 style="margin:0 0 8px 0; font-size:11px;"><i class="fas fa-bullhorn"></i> ${title}</h5>
@@ -2661,6 +2793,11 @@
                 document.getElementById('l-email').value = rememberedEmail;
                 document.getElementById('remember-me').checked = true;
             }
+            
+            // Sayfa açılış bildirimi
+            setTimeout(() => {
+                showNotification("RobuBubble Elite'e Hoş Geldiniz!", "success");
+            }, 1000);
             
             if (isFirebaseInitialized) {
                 auth.onAuthStateChanged(async (user) => {
