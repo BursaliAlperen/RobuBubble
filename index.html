@@ -3,14 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RobuBubble Elite v10.0</title>
+    <title>RobuBubble Elite</title>
+    <!-- Site İkonu (Sekme Görseli) -->
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/6bb4db5a2505e1d816fe8c01c6e181da9f2356c5/RobuBubble.jpg">
+    <!-- Font ve İkonlar -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <!-- Adsterra Reklam Kodu (Aktif) -->
+    <script type="text/javascript">
+        atOptions = {
+            'key' : 'd9a7c2625a5e82d48125f02ef95dcc3e',
+            'format' : 'iframe',
+            'height' : 60,
+            'width' : 468,
+            'params' : {}
+        };
+        document.write('<scr' + 'ipt type="text/javascript" src="//www.highperformancedformats.com/d9a7c2625a5e82d48125f02ef95dcc3e/invoke.js"></scr' + 'ipt>');
+    </script>
+    
+    <!-- İkinci Reklam Kodu (Pasif) -->
+    <!-- <script src="https://pl28564641.effectivegatecpm.com/a7/22/b8/a722b876fdad6b379d15a1e9aa0d314a.js"></script> -->
+    
     <style>
+        /* Sağ tık engelleme */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Developer Tools engelleme */
+        @media (min-width: 768px) {
+            body:before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: transparent;
+                z-index: 99999;
+                pointer-events: none;
+            }
+        }
+        
         :root {
             --bg: #050505;
             --bubble-main: rgba(255, 255, 255, 0.07);
@@ -23,6 +65,7 @@
             --warning: #ffb300;
             --info: #0099ff;
             --purple: #b967ff;
+            --robux: #ff4d4d;
         }
 
         * { 
@@ -56,33 +99,78 @@
             background: radial-gradient(circle at 50% -10%, #1a1a1a 0%, #000 100%); 
         }
 
-        /* --- LANGUAGE SELECTOR WITH FLAGS --- */
-        .lang-selector {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 100;
+        /* --- HEADER COMPACT --- */
+        .header { 
+            padding: 8px 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-shrink: 0;
+            height: 55px;
+            position: relative;
         }
         
-        .lang-btn {
+        .b-pill { 
+            background: var(--bubble-glass); 
+            border-radius: 25px; 
+            padding: 5px 10px; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        /* Altıgen Robux İkonu */
+        .r-icon { 
+            width: 22px; 
+            height: 22px; 
+            background: url('https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/6bb4db5a2505e1d816fe8c01c6e181da9f2356c5/RobuBubble.jpg') no-repeat center; 
+            background-size: contain; 
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            border: 2px solid var(--robux);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .r-icon::before {
+            content: "R$";
+            color: white;
+            font-size: 10px;
+            font-weight: 900;
+            text-shadow: 0 0 5px var(--robux);
+        }
+
+        /* --- LANGUAGE SELECTOR IN HEADER --- */
+        .lang-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .lang-header-btn {
             background: var(--bubble-glass);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 12px;
-            padding: 5px 10px;
+            padding: 4px 8px;
             color: var(--text);
             font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            min-width: 60px;
+            justify-content: center;
         }
         
-        .lang-dropdown {
+        .lang-header-dropdown {
             position: absolute;
             top: 100%;
-            right: 0;
+            right: 12px;
             margin-top: 5px;
             background: var(--bubble-main);
             backdrop-filter: blur(20px);
@@ -91,18 +179,20 @@
             padding: 6px;
             display: none;
             flex-direction: column;
-            min-width: 130px;
+            min-width: 150px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
         }
         
-        .lang-dropdown.show {
+        .lang-header-dropdown.show {
             display: flex;
             animation: pop 0.3s ease;
         }
         
-        .lang-option {
-            padding: 5px 8px;
+        .lang-header-option {
+            padding: 6px 8px;
             border-radius: 6px;
             font-size: 10px;
             cursor: pointer;
@@ -111,27 +201,24 @@
             gap: 6px;
         }
         
-        .lang-option:hover {
+        .lang-header-option:hover {
             background: rgba(255,255,255,0.05);
         }
         
-        .lang-option.active {
+        .lang-header-option.active {
             background: rgba(0, 255, 136, 0.1);
             color: var(--success);
         }
         
-        .flag-icon {
-            width: 14px;
-            height: 10px;
+        .country-icon {
+            width: 16px;
+            height: 12px;
             border-radius: 2px;
             background-size: cover;
             background-position: center;
             flex-shrink: 0;
         }
         
-        .flag-tr { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="24" fill="%23E30A17"/><circle cx="14" cy="12" r="6" fill="%23FFF"/><circle cx="14" cy="12" r="3" fill="%23E30A17"/></svg>'); }
-        .flag-en { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 24"><rect width="36" height="24" fill="%2300277A"/><path fill="%23FFF" d="M0 0h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0z"/><path fill="%23CF142B" d="M0 0h14.4v14.4H0z"/></svg>'); }
-
         /* --- AUTH SYSTEM --- */
         #auth-overlay { 
             position: fixed; 
@@ -142,22 +229,19 @@
             align-items: center; 
             justify-content: center; 
             padding: 10px;
-            overflow-y: auto;
         }
         
         .auth-card { 
             background: var(--bubble-main); 
             backdrop-filter: blur(30px); 
             border: 2px solid rgba(255,255,255,0.1); 
-            border-radius: 25px; 
+            border-radius: 20px; 
             padding: 20px; 
             width: 100%; 
             max-width: 300px; 
             text-align: center; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
             margin: auto;
-            max-height: 90vh;
-            overflow-y: auto;
         }
         
         .auth-section { 
@@ -183,8 +267,8 @@
         /* --- INPUTS & BUTTONS --- */
         .field { 
             background: rgba(0,0,0,0.5); 
-            border-radius: 12px; 
-            padding: 10px 12px; 
+            border-radius: 10px; 
+            padding: 10px; 
             margin: 6px 0; 
             border: 2px solid transparent; 
         }
@@ -223,37 +307,22 @@
             background: #fff; 
             color: #000; 
             border: none; 
-            border-radius: 15px; 
+            border-radius: 12px; 
             padding: 12px; 
             width: 100%; 
             font-weight: 700; 
             font-size: 12px; 
             cursor: pointer; 
-            margin-top: 10px; 
+            margin-top: 8px; 
         }
         
         .btn:active { 
             transform: scale(0.96); 
         }
         
-        .btn-admin { 
-            background: linear-gradient(45deg, #ff0080, #8000ff); 
-            color: #fff; 
-        }
-        
-        .btn-warning { 
-            background: var(--warning); 
-            color: #000; 
-        }
-        
         .btn-success { 
             background: var(--success); 
             color: #000; 
-        }
-        
-        .btn-purple {
-            background: var(--purple);
-            color: #fff;
         }
         
         .btn-google {
@@ -262,9 +331,9 @@
         }
         
         .btn-small {
-            padding: 6px 12px;
-            font-size: 11px;
-            border-radius: 10px;
+            padding: 6px 10px;
+            font-size: 10px;
+            border-radius: 8px;
             width: auto;
         }
         
@@ -273,7 +342,7 @@
             color: var(--sub); 
             cursor: pointer; 
             display: inline-block; 
-            margin-top: 10px; 
+            margin-top: 8px; 
             font-weight: 600; 
         }
         
@@ -284,8 +353,8 @@
         .divider {
             display: flex;
             align-items: center;
-            margin: 12px 0;
-            font-size: 10px;
+            margin: 10px 0;
+            font-size: 9px;
             color: var(--sub);
         }
         
@@ -302,38 +371,12 @@
         }
 
         /* --- MAIN APP INTERFACE --- */
-        .header { 
-            padding: 10px 15px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            flex-shrink: 0;
-            height: 60px;
-        }
-        
-        .b-pill { 
-            background: var(--bubble-glass); 
-            border-radius: 30px; 
-            padding: 5px 12px; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            border: 1px solid rgba(255,255,255,0.1); 
-        }
-        
-        .r-icon { 
-            width: 16px; 
-            height: 16px; 
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path fill="%23FFFFFF" d="M25,2L2,13.5v23L25,48l23-11.5v-23L25,2z M25,12l13,6.5v13L25,38l-13-6.5v-13L25,12z M25,18.7l-6.3,3.1v6.3l6.3,3.2l6.3-3.2v-6.3L25,18.7z"/></svg>') no-repeat center; 
-            background-size: contain; 
-        }
-
         .main { 
             flex: 1; 
-            padding: 0 15px 5px 15px; 
+            padding: 0 12px 5px 12px; 
             overflow-y: auto; 
-            height: calc(100vh - 120px);
-            max-height: calc(100vh - 120px);
+            height: calc(100vh - 115px);
+            max-height: calc(100vh - 115px);
             display: flex;
             flex-direction: column;
         }
@@ -364,7 +407,7 @@
 
         .card { 
             background: var(--bubble-main); 
-            border-radius: 20px; 
+            border-radius: 16px; 
             padding: 12px; 
             border: 1px solid rgba(255,255,255,0.08); 
             margin-bottom: 8px; 
@@ -374,7 +417,7 @@
 
         /* Scrollable Lists */
         .scroll-box { 
-            max-height: 100px; 
+            max-height: 120px; 
             overflow-y: auto; 
             padding-right: 5px; 
             margin-top: 8px; 
@@ -396,7 +439,7 @@
             align-items: center; 
             padding: 8px; 
             background: rgba(255,255,255,0.03); 
-            border-radius: 12px; 
+            border-radius: 10px; 
             margin-bottom: 5px; 
             font-size: 10px; 
         }
@@ -416,8 +459,8 @@
         .calc { 
             background: rgba(0, 255, 136, 0.08); 
             border: 1px solid var(--success); 
-            border-radius: 12px; 
-            padding: 10px; 
+            border-radius: 10px; 
+            padding: 8px; 
             margin-top: 8px; 
             font-size: 10px;
             line-height: 1.4;
@@ -430,7 +473,7 @@
         .withdrawal-note {
             background: rgba(255, 179, 0, 0.08);
             border: 1px solid var(--warning);
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 8px;
             margin-top: 8px;
             font-size: 9px;
@@ -438,11 +481,6 @@
             text-align: center;
         }
 
-        /* GamePass Section */
-        .gamepass-section { 
-            display: block;
-        }
-        
         /* Profile Edit Section */
         .profile-edit-section {
             display: none;
@@ -463,50 +501,24 @@
             animation: slideUp 0.3s ease; 
         }
         
-        .admin-controls { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 6px; 
-            margin-top: 10px; 
-        }
-        
-        .admin-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 10px;
-            padding: 8px;
-            font-size: 10px;
-            text-align: center;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-        
-        .admin-btn:hover {
-            background: rgba(255,255,255,0.15);
-        }
-        
         .admin-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 6px;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         
         .stat-box {
             background: rgba(0,0,0,0.3);
-            border-radius: 10px;
-            padding: 10px;
+            border-radius: 8px;
+            padding: 8px;
             text-align: center;
         }
         
         .stat-value {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
-            margin: 3px 0;
+            margin: 2px 0;
         }
         
         .stat-label {
@@ -523,7 +535,7 @@
             background: rgba(15,15,15,0.95); 
             backdrop-filter: blur(25px); 
             display: flex; 
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-top: 1px solid rgba(255,255,255,0.15); 
             box-shadow: 0 -5px 20px rgba(0,0,0,0.3); 
             z-index: 1000;
@@ -551,8 +563,8 @@
         }
         
         .n-btn svg { 
-            width: 20px; 
-            height: 20px; 
+            width: 18px; 
+            height: 18px; 
             display: block; 
             margin-bottom: 2px; 
             stroke: currentColor; 
@@ -564,17 +576,17 @@
         .admin-nav-btn {
             position: fixed;
             bottom: 70px;
-            right: 15px;
+            right: 12px;
             background: linear-gradient(45deg, #ff0080, #8000ff);
             border: 2px solid rgba(255,255,255,0.3);
             border-radius: 50%;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             display: none;
             align-items: center;
             justify-content: center;
             color: #fff;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             z-index: 999;
             box-shadow: 0 5px 15px rgba(128, 0, 255, 0.3);
@@ -593,11 +605,11 @@
         /* Admin Sub Navigation */
         .admin-subnav {
             position: fixed;
-            bottom: 125px;
-            right: 15px;
+            bottom: 120px;
+            right: 12px;
             background: rgba(15,15,15,0.95);
             backdrop-filter: blur(25px);
-            border-radius: 18px;
+            border-radius: 16px;
             display: none;
             padding: 8px;
             border: 1px solid var(--purple);
@@ -605,7 +617,7 @@
             z-index: 998;
             flex-direction: column;
             gap: 6px;
-            min-width: 150px;
+            min-width: 140px;
         }
         
         .admin-subnav.show {
@@ -616,7 +628,7 @@
         .admin-subnav-btn {
             background: rgba(185, 103, 255, 0.1);
             border: 1px solid rgba(185, 103, 255, 0.3);
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 8px;
             color: var(--purple);
             font-size: 10px;
@@ -629,7 +641,7 @@
         
         .admin-subnav-btn i {
             font-size: 12px;
-            width: 18px;
+            width: 16px;
         }
         
         /* Notification */
@@ -641,12 +653,12 @@
             background: var(--bubble-main);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 10px 15px;
             z-index: 1000;
             text-align: center;
             width: 90%;
-            max-width: 350px;
+            max-width: 320px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 11px;
@@ -678,14 +690,14 @@
         
         .stat-card {
             background: var(--bubble-glass);
-            border-radius: 16px;
+            border-radius: 14px;
             padding: 10px;
             text-align: center;
             border: 1px solid rgba(255,255,255,0.05);
         }
         
         .stat-card-value {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
             margin: 4px 0;
         }
@@ -699,42 +711,27 @@
         .social-login {
             display: flex;
             gap: 8px;
-            margin: 12px 0;
+            margin: 10px 0;
         }
         
         .social-btn {
             flex: 1;
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
+            border-radius: 10px;
             padding: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
             color: #fff;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
         }
         
         .social-btn.google {
             background: #4285F4;
             border-color: #4285F4;
-        }
-        
-        /* Loading Spinner */
-        .spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #fff;
-            animation: spin 1s ease-in-out infinite;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
         }
         
         /* Password Strength */
@@ -759,7 +756,7 @@
             height: 50px;
             background: var(--bubble-glass);
             border-radius: 25px;
-            margin: 0 auto 10px;
+            margin: 0 auto 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -768,14 +765,6 @@
             cursor: pointer;
         }
         
-        /* GamePass Info */
-        .gamepass-info {
-            font-size: 9px;
-            color: var(--sub);
-            margin-top: 4px;
-            word-break: break-all;
-        }
-
         /* Error Message */
         .error-message {
             color: var(--danger);
@@ -783,26 +772,100 @@
             margin-top: 4px;
             display: none;
         }
+
+        /* Ad Modal */
+        .ad-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+        
+        .ad-modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .ad-modal-content {
+            background: var(--bubble-main);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            max-width: 300px;
+            width: 100%;
+            border: 2px solid var(--success);
+        }
+        
+        .ad-timer {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--success);
+            margin: 15px 0;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+        
+        .ad-message {
+            font-size: 12px;
+            color: var(--sub);
+            margin-bottom: 15px;
+        }
+        
+        /* Adsterra Reklam Konteyneri */
+        .ad-container {
+            margin: 10px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .ad-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
         
         /* Compact Layout */
         .compact-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 8px;
-            margin: 10px 0;
+            margin: 8px 0;
         }
         
-        /* Prevent zoom on input focus on mobile */
+        /* Right side display */
+        .right-side {
+            text-align: right;
+        }
+        
+        #admin-badge {
+            font-size: 7px;
+            color: var(--success);
+            font-weight: 800;
+            display: none;
+            margin-top: 2px;
+        }
+        
+        /* Prevent zoom on mobile */
         @media (max-width: 768px) {
             input, select, textarea {
-                font-size: 16px !important; /* Prevents iOS zoom */
+                font-size: 16px !important;
             }
         }
 
-        /* Touch friendly buttons */
+        /* Touch friendly */
         @media (hover: none) and (pointer: coarse) {
             .btn, .n-btn, .admin-btn {
-                min-height: 44px; /* Apple's recommended minimum touch target size */
+                min-height: 44px;
             }
             
             input, select {
@@ -810,10 +873,21 @@
             }
         }
 
-        /* Very small screens */
+        /* Extra small screens */
         @media (max-height: 600px) {
-            .scroll-box {
-                max-height: 80px;
+            .header {
+                height: 50px;
+                padding: 6px 10px;
+            }
+            
+            .main {
+                height: calc(100vh - 110px);
+                padding: 0 10px 5px 10px;
+            }
+            
+            .nav {
+                height: 55px;
+                padding: 5px 10px;
             }
             
             .card {
@@ -821,25 +895,24 @@
                 margin-bottom: 6px;
             }
             
-            .btn {
-                padding: 10px;
-            }
-            
-            .main {
-                padding: 0 12px 5px 12px;
-            }
-            
-            .header {
-                padding: 8px 12px;
-                height: 55px;
-            }
-            
-            .nav {
-                height: 55px;
+            .scroll-box {
+                max-height: 100px;
             }
         }
         
         @media (max-height: 500px) {
+            .header {
+                height: 45px;
+            }
+            
+            .nav {
+                height: 50px;
+            }
+            
+            .main {
+                height: calc(100vh - 95px);
+            }
+            
             .stats-grid {
                 margin: 6px 0;
             }
@@ -848,18 +921,6 @@
                 padding: 8px;
                 margin-bottom: 5px;
             }
-            
-            .header {
-                height: 50px;
-            }
-            
-            .nav {
-                height: 50px;
-            }
-            
-            .main {
-                height: calc(100vh - 100px);
-            }
         }
     </style>
 </head>
@@ -867,28 +928,24 @@
 
     <div class="bg-fx"></div>
     
-    <!-- Language Selector with Flags -->
-    <div class="lang-selector">
-        <div class="lang-btn" onclick="toggleLangDropdown()">
-            <i class="fas fa-globe"></i>
-            <span id="current-lang">🇹🇷 TR</span>
-        </div>
-        <div class="lang-dropdown" id="lang-dropdown">
-            <div class="lang-option active" onclick="changeLanguage('tr')">
-                <div class="flag-icon flag-tr"></div>
-                <span>Türkçe</span>
-            </div>
-            <div class="lang-option" onclick="changeLanguage('en')">
-                <div class="flag-icon flag-en"></div>
-                <span>English</span>
-            </div>
+    <!-- Ad Modal -->
+    <div class="ad-modal" id="ad-modal">
+        <div class="ad-modal-content">
+            <h3 style="margin:0; font-size:16px;">🎬 REKLAM İZLENİYOR</h3>
+            <div class="ad-message">Reklam bittikten sonra ödülünüz verilecek...</div>
+            <div class="ad-timer" id="ad-timer">5</div>
+            <div class="ad-message">Lütfen reklamı bekleyin...</div>
+            <button class="btn" onclick="closeAd()" style="background:var(--danger); color:#fff; margin-top:10px;">İPTAL</button>
         </div>
     </div>
     
     <!-- Notification -->
     <div class="notification" id="notification"></div>
     
-    <!-- Admin Nav Button (Floating) -->
+    <!-- Adsterra Reklam Konteyneri -->
+    <div class="ad-container" id="ad-container"></div>
+    
+    <!-- Admin Nav Button -->
     <div class="admin-nav-btn" id="admin-nav-btn" onclick="toggleAdminSubnav()">
         <i class="fas fa-crown"></i>
     </div>
@@ -915,7 +972,10 @@
 
     <div id="auth-overlay">
         <div class="auth-card">
-            <div class="r-icon" style="width:40px; height:40px; margin: 0 auto 12px; filter: drop-shadow(0 0 8px #fff);"></div>
+            <!-- Altıgen Logo -->
+            <div style="width:80px; height:80px; margin:0 auto 15px; background:url('https://raw.githubusercontent.com/BursaliAlperen/RobuBubble/6bb4db5a2505e1d816fe8c01c6e181da9f2356c5/RobuBubble.jpg') no-repeat center; background-size:cover; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); border:3px solid var(--robux); display:flex; align-items:center; justify-content:center;">
+                <div style="color:white; font-size:20px; font-weight:900; text-shadow:0 0 10px var(--robux);">R$</div>
+            </div>
             
             <div id="sec-login" class="auth-section active">
                 <h2 style="margin:0; font-size:18px;" data-i18n="welcome_back">Hoş Geldin</h2>
@@ -955,7 +1015,6 @@
                 <h2 style="margin:0; font-size:18px;" data-i18n="register">Kayıt Ol</h2>
                 <p style="color:var(--sub); font-size:10px; margin-bottom:12px;" data-i18n="register_desc">Ücretsiz Robux Dünyası</p>
                 
-                <!-- Referans Kodu -->
                 <div class="field field-icon">
                     <i class="fas fa-user-friends"></i>
                     <input type="text" id="r-referral" placeholder="Referans Kodu (Opsiyonel)" data-i18n-placeholder="referral_code_optional" readonly>
@@ -987,7 +1046,6 @@
                     <input type="password" id="r-password-confirm" placeholder="Şifreyi Onayla" data-i18n-placeholder="confirm_password" onkeyup="checkPasswordMatch()">
                 </div>
                 
-                <!-- Password Match Error -->
                 <div class="error-message" id="password-match-error">
                     <i class="fas fa-exclamation-circle"></i>
                     <span data-i18n="passwords_not_match">Şifreler eşleşmiyor!</span>
@@ -1031,7 +1089,6 @@
                     <input type="password" id="new-password-confirm" placeholder="Yeni Şifreyi Onayla" data-i18n-placeholder="confirm_new_password" onkeyup="checkResetPasswordMatch()">
                 </div>
                 
-                <!-- Password Match Error for Reset -->
                 <div class="error-message" id="reset-password-match-error">
                     <i class="fas fa-exclamation-circle"></i>
                     <span data-i18n="passwords_not_match">Şifreler eşleşmiyor!</span>
@@ -1048,15 +1105,41 @@
             <div class="r-icon"></div>
             <span id="bal" style="font-weight:700; font-size:14px;">0.00</span>
         </div>
-        <div style="text-align:right;">
-            <div id="display-name" style="font-weight:700; font-size:12px;">MISAFIR</div>
-            <div id="admin-badge" style="font-size:7px; color:var(--success); font-weight:800; display:none;">ADMIN</div>
+        
+        <div class="lang-header">
+            <div class="right-side">
+                <div id="display-name" style="font-weight:700; font-size:12px;">MISAFIR</div>
+                <div id="admin-badge">ADMIN</div>
+            </div>
+            
+            <div class="lang-header-btn" onclick="toggleLangDropdown()">
+                <i class="fas fa-globe"></i>
+                <span id="current-lang">TR</span>
+            </div>
+            
+            <div class="lang-header-dropdown" id="lang-dropdown">
+                <div class="lang-header-option active" onclick="changeLanguage('tr')">
+                    <div class="country-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 36 24\"><rect width=\"36\" height=\"24\" fill=\"%23E30A17\"/><circle cx=\"14\" cy=\"12\" r=\"6\" fill=\"%23FFF\"/><circle cx=\"14\" cy=\"12\" r=\"3\" fill=\"%23E30A17\"/></svg>')"></div>
+                    <span>Türkçe</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('en')">
+                    <div class="country-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 36 24\"><rect width=\"36\" height=\"24\" fill=\"%2300277A\"/><path fill=\"%23FFF\" d=\"M0 0h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0z\"/><path fill=\"%23CF142B\" d=\"M0 0h14.4v14.4H0z\"/></svg>')"></div>
+                    <span>English (US)</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('gb')">
+                    <div class="country-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 36 24\"><rect width=\"36\" height=\"24\" fill=\"%2300277A\"/><path fill=\"%23FFF\" d=\"M0 0h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0zm0 4.8h36v2.4H0z\"/><path fill=\"%23CF142B\" d=\"M0 0h14.4v14.4H0z\"/></svg>')"></div>
+                    <span>English (UK)</span>
+                </div>
+                <div class="lang-header-option" onclick="changeLanguage('de')">
+                    <div class="country-icon" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 36 24\"><rect width=\"36\" height=\"8\" y=\"0\" fill=\"%23000\"/><rect width=\"36\" height=\"8\" y=\"8\" fill=\"%23D00\"/><rect width=\"36\" height=\"8\" y=\"16\" fill=\"%23FFCE00\"/></svg>')"></div>
+                    <span>Deutsch</span>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="main">
         <div id="t-home" class="panel active">
-            <!-- Dashboard Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-card-value" id="today-earned">0.00</div>
@@ -1071,7 +1154,7 @@
             <div class="card" style="background:#fff; color:#000; text-align:center;">
                 <h3 style="margin:0; font-size:14px;" data-i18n="robux_rain">Robux Yağmuru</h3>
                 <p style="font-size:10px; margin-bottom:10px; font-weight:600;" data-i18n="earn_range">0.03 - 0.10 R$</p>
-                <button class="btn" onclick="earn()" style="background:#000; color:#fff; padding:10px; font-size:11px;" data-i18n="watch_video">VİDEO İZLE</button>
+                <button class="btn" onclick="triggerAdsterraAd()" style="background:#000; color:#fff; padding:10px; font-size:11px;" data-i18n="watch_video">REKLAM İZLE</button>
             </div>
             
             <div class="card" style="flex:1; display:flex; flex-direction:column;">
@@ -1090,13 +1173,11 @@
                 <h3 style="margin:0; font-size:14px;" data-i18n="gamepass_withdrawal">GamePass Çekimi</h3>
                 <p style="color:var(--sub); font-size:10px; margin:4px 0 10px 0;" data-i18n="gamepass_withdrawal_desc">GamePass URL ve fiyatını gir</p>
                 
-                <!-- Çekim Notu -->
                 <div class="withdrawal-note">
                     <i class="fas fa-info-circle"></i>
                     <span data-i18n="withdrawal_note">5 R$ → 3 R$ (Roblox %30 keser)</span>
                 </div>
                 
-                <!-- GamePass URL Section -->
                 <div id="gamepass-section" class="gamepass-section">
                     <div class="field">
                         <input type="url" id="gamepass-url" placeholder="roblox.com/game-pass/..." data-i18n-placeholder="gamepass_url_placeholder">
@@ -1121,9 +1202,7 @@
                         <i class="fas fa-sync-alt" style="font-size:9px;"></i>
                     </button>
                 </div>
-                <div class="scroll-box" id="withdrawal-history">
-                    <!-- Dinamik olarak eklenecek -->
-                </div>
+                <div class="scroll-box" id="withdrawal-history"></div>
             </div>
         </div>
 
@@ -1132,7 +1211,7 @@
                 <h3 style="margin:0; font-size:14px;" data-i18n="build_your_team">Ekibini Kur</h3>
                 <p style="color:var(--sub); font-size:10px; margin-bottom:8px;" data-i18n="team_desc">Davet et, %10 komisyon al</p>
                 
-                <div style="background:var(--bubble-glass); padding:10px; border-radius:12px; margin:10px 0; border:1px solid rgba(255,255,255,0.1); font-size:18px; font-weight:700; letter-spacing:1px;" id="referral-code">BUBBLE99</div>
+                <div style="background:var(--bubble-glass); padding:10px; border-radius:12px; margin:10px 0; border:1px solid rgba(255,255,255,0.1); font-size:16px; font-weight:700; letter-spacing:1px;" id="referral-code">ROBUBBLE</div>
                 
                 <div style="display:flex; gap:6px; margin-bottom:10px;">
                     <button class="btn" onclick="copyReferralCode()" style="flex:1; padding:8px; font-size:11px;" data-i18n="copy_code">KOPYALA</button>
@@ -1141,11 +1220,11 @@
                 
                 <div style="display:flex; justify-content:space-around; margin-top:8px;">
                     <div style="text-align:center;">
-                        <div style="font-size:16px; font-weight:700;" id="total-referrals">0</div>
-                        <div style="font-size:8px; color:var(--sub;" data-i18n="total_referrals">Referans</div>
+                        <div style="font-size:14px; font-weight:700;" id="total-referrals">0</div>
+                        <div style="font-size:8px; color:var(--sub);" data-i18n="total_referrals">Referans</div>
                     </div>
                     <div style="text-align:center;">
-                        <div style="font-size:16px; font-weight:700;" id="referral-earnings">0.00</div>
+                        <div style="font-size:14px; font-weight:700;" id="referral-earnings">0.00</div>
                         <div style="font-size:8px; color:var(--sub);" data-i18n="referral_earnings">Kazanç</div>
                     </div>
                 </div>
@@ -1158,14 +1237,11 @@
                         <i class="fas fa-sync-alt" style="font-size:9px;"></i>
                     </button>
                 </div>
-                <div class="scroll-box" id="referral-history">
-                    <!-- Dinamik olarak eklenecek -->
-                </div>
+                <div class="scroll-box" id="referral-history"></div>
             </div>
         </div>
 
         <div id="t-user" class="panel">
-            <!-- Normal Profil -->
             <div id="normal-profile" class="card" style="text-align:center;">
                 <div class="user-avatar" id="user-avatar" onclick="changeAvatar()">👤</div>
                 <h3 id="u-mail-info" style="margin:0; font-size:13px;">-</h3>
@@ -1196,7 +1272,6 @@
                 <button class="btn" style="background:var(--danger); color:#fff; padding:10px; font-size:11px;" onclick="logout()" data-i18n="secure_logout">ÇIKIŞ YAP</button>
             </div>
             
-            <!-- Profil Düzenleme -->
             <div id="profile-edit-section" class="profile-edit-section">
                 <div class="card" style="border-left: 3px solid var(--info);">
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
@@ -1232,7 +1307,6 @@
                 </div>
             </div>
             
-            <!-- Admin Panel -->
             <div id="admin-panel" class="admin-section">
                 <div class="card" style="border-left: 3px solid var(--success);">
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
@@ -1288,6 +1362,22 @@
     </div>
 
     <script>
+        // Sağ tık engelleme
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            showNotification("Sağ tık engellendi!", "warning");
+            return false;
+        });
+        
+        // Developer Tools engelleme
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73) || (e.ctrlKey && e.keyCode === 85)) {
+                e.preventDefault();
+                showNotification("Bu işlem engellendi!", "warning");
+                return false;
+            }
+        });
+
         // Firebase Konfigürasyonu
         const firebaseConfig = {
             apiKey: "AIzaSyAw52gJI2if4Sih0OYvF1NFrIastlYHn-k",
@@ -1319,7 +1409,7 @@
             showNotification("Firebase bağlantı hatası! Lütfen sayfayı yenileyin.", "error");
         }
 
-        // Dil desteği
+        // 14 DİL DESTEĞİ
         const translations = {
             tr: {
                 // Auth
@@ -1360,7 +1450,7 @@
                 "total_earned": "Toplam",
                 "robux_rain": "Robux Yağmuru",
                 "earn_range": "0.03 - 0.10 R$",
-                "watch_video": "VİDEO İZLE",
+                "watch_video": "REKLAM İZLE",
                 "recent_activities": "SON AKTİVİTELER",
                 "session_started": "Giriş Yapıldı",
                 "successful": "Başarılı",
@@ -1421,8 +1511,7 @@
                 "profile": "PROFİL"
             },
             en: {
-                // Auth
-                "welcome_back": "Welcome Back",
+                "welcome_back": "Welcome",
                 "login_desc": "RobuBubble Elite Login",
                 "email": "Email",
                 "password": "Password",
@@ -1453,13 +1542,11 @@
                 "confirm_new_password": "Confirm New Password",
                 "update_password": "UPDATE",
                 "cancel": "Cancel",
-                
-                // Main
                 "today_earned": "Today",
                 "total_earned": "Total",
                 "robux_rain": "Robux Rain",
                 "earn_range": "0.03 - 0.10 R$",
-                "watch_video": "WATCH VIDEO",
+                "watch_video": "WATCH AD",
                 "recent_activities": "RECENT ACTIVITIES",
                 "session_started": "Logged In",
                 "successful": "Successful",
@@ -1467,20 +1554,15 @@
                 "level": "Level",
                 "rank": "Rank",
                 "days": "Days",
-                
-                // Wallet
                 "gamepass_withdrawal": "GamePass Withdrawal",
                 "gamepass_withdrawal_desc": "Enter GamePass URL and price",
                 "withdrawal_note": "5 R$ → 3 R$ (Roblox 30% fee)",
                 "gamepass_url_placeholder": "roblox.com/game-pass/...",
                 "gamepass_price": "Price (R$)",
-                "gamepass_url": "GamePass URL",
                 "you_will_receive": "You'll get",
                 "start_withdrawal": "WITHDRAW",
                 "withdrawal_history": "WITHDRAWAL HISTORY",
                 "no_withdrawals": "No withdrawals yet",
-                
-                // Team
                 "build_your_team": "Build Your Team",
                 "team_desc": "Invite, get 10% commission",
                 "copy_code": "COPY",
@@ -1489,8 +1571,6 @@
                 "referral_earnings": "Earnings",
                 "referral_history": "REFERRAL HISTORY",
                 "no_referrals": "No referrals yet",
-                
-                // Profile
                 "edit_profile": "Edit Profile",
                 "edit_profile_desc": "Update your info",
                 "change_password": "Change Password",
@@ -1499,8 +1579,6 @@
                 "country": "Country",
                 "select_avatar": "Avatar:",
                 "save_changes": "SAVE",
-                
-                // Admin
                 "total_users": "Users",
                 "today_earnings": "Today",
                 "pending_withdrawals": "Pending",
@@ -1512,8 +1590,6 @@
                 "send_announcement": "Announcement",
                 "admin_panel": "Admin Panel",
                 "admin_panel_desc": "System management",
-                
-                // Navigation
                 "home": "HOME",
                 "wallet": "WALLET",
                 "team": "TEAM",
@@ -1530,23 +1606,9 @@
         let userAvatar = '👤';
         let userData = {};
         let userReferralCode = '';
+        let adTimer = null;
+        let adCountdown = 5;
         
-        // Uygulama verileri
-        const appData = {
-            balance: 0.00,
-            todayEarned: 0.00,
-            totalEarned: 0.00,
-            activities: [],
-            withdrawals: [],
-            referrals: [],
-            totalReferrals: 0,
-            referralEarnings: 0,
-            userLevel: 1,
-            userRank: "Yeni",
-            userStreak: 0,
-            joinDate: new Date().toLocaleDateString('tr-TR')
-        };
-
         // URL'den referans kodunu al
         function getReferralFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1556,14 +1618,11 @@
         // Dil değiştirme
         function changeLanguage(lang) {
             currentLanguage = lang;
-            const langNames = {
-                'tr': '🇹🇷 TR',
-                'en': '🇬🇧 EN'
-            };
+            const langDisplay = lang === 'tr' ? 'TR' : lang === 'en' ? 'US' : lang === 'gb' ? 'GB' : lang === 'de' ? 'DE' : 'TR';
             
-            document.getElementById('current-lang').textContent = langNames[lang] || '🇹🇷 TR';
+            document.getElementById('current-lang').textContent = langDisplay;
             
-            document.querySelectorAll('.lang-option').forEach(option => {
+            document.querySelectorAll('.lang-header-option').forEach(option => {
                 option.classList.remove('active');
                 const langCode = option.getAttribute('onclick').match(/'([^']+)'/)[1];
                 if (langCode === lang) {
@@ -1600,9 +1659,9 @@
         
         // Dil açılır menüsünü dışarı tıklayınca kapat
         document.addEventListener('click', function(event) {
-            const langSelector = document.querySelector('.lang-selector');
+            const langBtn = document.querySelector('.lang-header-btn');
             const dropdown = document.getElementById('lang-dropdown');
-            if (!langSelector.contains(event.target)) {
+            if (langBtn && !langBtn.contains(event.target) && dropdown && !dropdown.contains(event.target)) {
                 dropdown.classList.remove('show');
             }
             
@@ -1650,7 +1709,7 @@
             }
         }
 
-        // Şifre eşleşme kontrolü (kayıt için)
+        // Şifre eşleşme kontrolü
         function checkPasswordMatch() {
             const password = document.getElementById('r-password').value;
             const confirmPassword = document.getElementById('r-password-confirm').value;
@@ -1665,7 +1724,7 @@
             }
         }
 
-        // Şifre eşleşme kontrolü (sıfırlama için)
+        // Şifre eşleşme kontrolü (sıfırlama)
         function checkResetPasswordMatch() {
             const password = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('new-password-confirm').value;
@@ -1709,7 +1768,7 @@
                 }
                 
                 if (password !== confirmPassword) {
-                    return showNotification("Şifreler eşleşmiyor!", "error");
+                    return showNotification(translations[currentLanguage]['passwords_not_match'], "error");
                 }
                 
                 if (password.length < 8) {
@@ -1721,14 +1780,12 @@
                 }
                 
                 try {
-                    // Firebase ile kayıt
                     if (isFirebaseInitialized) {
                         const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                         const user = userCredential.user;
                         
                         userReferralCode = generateReferralCode();
                         
-                        // Kullanıcı verilerini Firestore'a kaydet
                         const userData = {
                             username: username,
                             email: email,
@@ -1763,7 +1820,6 @@
                         return;
                     }
                     
-                    // Admin kontrolü
                     if(email.toLowerCase() === ADMIN_EMAIL) {
                         isAdmin = true;
                         document.getElementById('admin-badge').style.display = 'block';
@@ -1771,7 +1827,6 @@
                         showNotification("Admin yetkileri tanımlandı.", "success");
                     }
                     
-                    // Giriş yap
                     setTimeout(() => {
                         completeLogin(email, username);
                     }, 1500);
@@ -1802,11 +1857,9 @@
                 
                 try {
                     if (isFirebaseInitialized) {
-                        // Firebase ile giriş
                         const userCredential = await auth.signInWithEmailAndPassword(email, password);
                         const user = userCredential.user;
                         
-                        // Kullanıcı verilerini Firestore'dan al
                         const userDoc = await firestore.collection('users').doc(user.uid).get();
                         if (userDoc.exists) {
                             userData = userDoc.data();
@@ -1823,7 +1876,6 @@
                         return;
                     }
                     
-                    // Admin kontrolü
                     if(email.toLowerCase() === ADMIN_EMAIL) {
                         isAdmin = true;
                         document.getElementById('admin-badge').style.display = 'block';
@@ -1863,11 +1915,9 @@
                     const result = await auth.signInWithPopup(provider);
                     const user = result.user;
                     
-                    // Kullanıcı verilerini kontrol et
                     const userDoc = await firestore.collection('users').doc(user.uid).get();
                     
                     if (!userDoc.exists) {
-                        // Yeni kullanıcı kaydı
                         userReferralCode = generateReferralCode();
                         await firestore.collection('users').doc(user.uid).set({
                             username: user.displayName || user.email.split('@')[0],
@@ -1897,7 +1947,6 @@
                         email: user.email
                     };
                     
-                    // Admin kontrolü
                     if(user.email.toLowerCase() === ADMIN_EMAIL) {
                         isAdmin = true;
                         document.getElementById('admin-badge').style.display = 'block';
@@ -1920,25 +1969,22 @@
             document.getElementById('u-mail-info').innerText = email;
             document.getElementById('user-avatar').textContent = userAvatar;
             
-            // Referans kodunu göster
             if (userReferralCode) {
                 document.getElementById('referral-code').textContent = userReferralCode;
             }
             
-            // Kullanıcı verilerini güncelle
             if (userData) {
-                const joinDate = userData.joinDate ? new Date(userData.joinDate).toLocaleDateString('tr-TR') : appData.joinDate;
-                document.getElementById('user-join-date').textContent = `Üyelik: ${joinDate}`;
-                document.getElementById('user-level').textContent = userData.level || appData.userLevel;
-                document.getElementById('user-rank').textContent = userData.rank || appData.userRank;
-                document.getElementById('user-streak').textContent = userData.streak || appData.userStreak;
-                document.getElementById('bal').textContent = (userData.balance || appData.balance).toFixed(2);
-                document.getElementById('today-earned').textContent = (userData.todayEarned || appData.todayEarned).toFixed(2);
-                document.getElementById('total-earned').textContent = (userData.totalEarned || appData.totalEarned).toFixed(2);
+                const joinDate = userData.joinDate ? new Date(userData.joinDate).toLocaleDateString('tr-TR') : new Date().toLocaleDateString('tr-TR');
+                document.getElementById('user-join-date').textContent = "Üyelik: " + joinDate;
+                document.getElementById('user-level').textContent = userData.level || 1;
+                document.getElementById('user-rank').textContent = userData.rank || translations[currentLanguage]['new'] || "Yeni";
+                document.getElementById('user-streak').textContent = userData.streak || 0;
+                document.getElementById('bal').textContent = (userData.balance || 0).toFixed(2);
+                document.getElementById('today-earned').textContent = (userData.todayEarned || 0).toFixed(2);
+                document.getElementById('total-earned').textContent = (userData.totalEarned || 0).toFixed(2);
             }
             
-            // Aktivite logu ekle
-            addActivity("Giriş Yapıldı", "Başarılı", "success");
+            addActivity(translations[currentLanguage]['session_started'], translations[currentLanguage]['successful'], "success");
             
             document.getElementById('auth-overlay').style.opacity = '0';
             setTimeout(() => {
@@ -1961,14 +2007,25 @@
             try {
                 if (isFirebaseInitialized) {
                     await auth.sendPasswordResetEmail(email);
-                    showNotification("Sıfırlama linki gönderildi!", "success");
+                    showNotification("Sıfırlama linki gönderildi! Lütfen e-postanızı kontrol edin.", "success");
+                    setTimeout(() => {
+                        showAuth('sec-login');
+                    }, 2000);
                 } else {
                     showNotification("Firebase bağlantı hatası!", "error");
                 }
                 
             } catch (error) {
                 console.error("Şifre sıfırlama hatası:", error);
-                showNotification("Şifre sıfırlama sırasında hata oluştu", "error");
+                let errorMessage = "Şifre sıfırlama sırasında hata oluştu";
+                
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = "Bu e-posta adresiyle kayıtlı kullanıcı bulunamadı!";
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = "Geçersiz e-posta adresi!";
+                }
+                
+                showNotification(errorMessage, "error");
             }
         }
         
@@ -1981,7 +2038,7 @@
             }
             
             if (newPass !== confirmPass) {
-                return showNotification("Şifreler eşleşmiyor!", "error");
+                return showNotification(translations[currentLanguage]['passwords_not_match'], "error");
             }
             
             if (newPass.length < 8) {
@@ -2104,53 +2161,85 @@
             }
         }
 
-        async function earn() {
+        // ADSTERRA REKLAM TETİKLEYİCİ
+        function triggerAdsterraAd() {
             if (!isFirebaseInitialized || !currentUser?.uid) {
                 return showNotification("Giriş yapmanız gerekiyor!", "error");
             }
             
-            showNotification("Video izleniyor...", "info");
+            // Adsterra reklamını göster
+            const adContainer = document.getElementById('ad-container');
+            adContainer.innerHTML = `
+                <div style="background:var(--bubble-glass); border-radius:12px; padding:10px; margin:10px 0;">
+                    <h4 style="margin:0 0 8px 0; font-size:12px;">🎬 REKLAM İZLENİYOR</h4>
+                    <div style="font-size:9px; color:var(--sub); margin-bottom:10px;">
+                        Reklam bittikten sonra otomatik olarak Robux kazanacaksınız...
+                    </div>
+                    <iframe src="//www.highperformancedformats.com/d9a7c2625a5e82d48125f02ef95dcc3e/invoke.html" width="468" height="60" frameborder="0" scrolling="no" style="max-width:100%; border-radius:8px;"></iframe>
+                    <div style="font-size:8px; color:var(--sub); margin-top:8px; text-align:center;">
+                        Reklamı izledikten sonra kazanç otomatik eklenecektir.
+                    </div>
+                </div>
+            `;
+            adContainer.classList.add('show');
             
-            // 5 saniye beklet (video izleniyor simülasyonu)
-            setTimeout(async () => {
-                const r = (Math.random() * (0.10 - 0.03) + 0.03).toFixed(2);
-                const earned = parseFloat(r);
+            // Reklam modalını göster
+            document.getElementById('ad-modal').classList.add('active');
+            adCountdown = 15;
+            document.getElementById('ad-timer').textContent = adCountdown;
+            
+            adTimer = setInterval(() => {
+                adCountdown--;
+                document.getElementById('ad-timer').textContent = adCountdown;
                 
-                try {
-                    // Firestore'da güncelle
-                    await firestore.collection('users').doc(currentUser.uid).update({
-                        balance: firebase.firestore.FieldValue.increment(earned),
-                        totalEarned: firebase.firestore.FieldValue.increment(earned),
-                        todayEarned: firebase.firestore.FieldValue.increment(earned)
-                    });
-                    
-                    // Aktivite logu ekle
-                    await firestore.collection('activities').add({
-                        userId: currentUser.uid,
-                        type: 'video_reward',
-                        amount: earned,
-                        description: 'Video izleyerek kazanıldı',
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    
-                    // Kullanıcı verilerini güncelle
-                    userData.balance = (userData.balance || 0) + earned;
-                    userData.totalEarned = (userData.totalEarned || 0) + earned;
-                    userData.todayEarned = (userData.todayEarned || 0) + earned;
-                    
-                    // Bakiye güncelle
-                    updateDashboard();
-                    
-                    // Aktivite ekle
-                    addActivity("Video Ödülü", `+${r} R$`);
-                    
-                    showNotification(`${r} R$ kazandınız!`, "success");
-                    
-                } catch (error) {
-                    console.error("Kazanç hatası:", error);
-                    showNotification("Kazanç sırasında hata oluştu", "error");
+                if (adCountdown <= 0) {
+                    clearInterval(adTimer);
+                    closeAd();
+                    giveReward();
                 }
-            }, 5000);
+            }, 1000);
+        }
+        
+        function closeAd() {
+            if (adTimer) {
+                clearInterval(adTimer);
+            }
+            document.getElementById('ad-modal').classList.remove('active');
+            document.getElementById('ad-container').classList.remove('show');
+            document.getElementById('ad-container').innerHTML = '';
+        }
+        
+        async function giveReward() {
+            const r = (Math.random() * (0.10 - 0.03) + 0.03).toFixed(2);
+            const earned = parseFloat(r);
+            
+            try {
+                await firestore.collection('users').doc(currentUser.uid).update({
+                    balance: firebase.firestore.FieldValue.increment(earned),
+                    totalEarned: firebase.firestore.FieldValue.increment(earned),
+                    todayEarned: firebase.firestore.FieldValue.increment(earned)
+                });
+                
+                await firestore.collection('activities').add({
+                    userId: currentUser.uid,
+                    type: 'ad_reward',
+                    amount: earned,
+                    description: 'Reklam izleyerek kazanıldı',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                userData.balance = (userData.balance || 0) + earned;
+                userData.totalEarned = (userData.totalEarned || 0) + earned;
+                userData.todayEarned = (userData.todayEarned || 0) + earned;
+                
+                updateDashboard();
+                addActivity("Reklam Ödülü", `+${r} R$`);
+                showNotification(`Kazandınız: ${r} R$!`, "success");
+                
+            } catch (error) {
+                console.error("Ödül verme hatası:", error);
+                showNotification("Ödül verme sırasında hata oluştu", "error");
+            }
         }
         
         // Aktivite ekle
@@ -2163,38 +2252,35 @@
                 time: new Date().toLocaleTimeString('tr-TR', {hour: '2-digit', minute: '2-digit'})
             };
             
-            appData.activities.unshift(activity);
-            
             const logList = document.getElementById('log-list');
             const item = document.createElement('div');
             item.className = 'row';
             item.innerHTML = `<span>${title}</span><span style="color:var(--${color}); font-size:9px;">${value}</span>`;
             logList.prepend(item);
             
-            if (appData.activities.length > 10) {
-                appData.activities.pop();
-                if (logList.children.length > 10) {
-                    logList.removeChild(logList.lastChild);
-                }
+            if (logList.children.length > 10) {
+                logList.removeChild(logList.lastChild);
             }
         }
         
         // Aktiviteleri temizle
         function clearActivities() {
-            if (appData.activities.length === 0) {
+            const logList = document.getElementById('log-list');
+            if (logList.children.length <= 1) {
                 return showNotification("Temizlenecek aktivite yok!", "warning");
             }
             
-            appData.activities = [];
-            document.getElementById('log-list').innerHTML = '';
+            while (logList.children.length > 1) {
+                logList.removeChild(logList.lastChild);
+            }
             showNotification("Aktiviteler temizlendi!", "success");
         }
         
         // Dashboard güncelle
         function updateDashboard() {
-            const balance = userData?.balance || appData.balance;
-            const todayEarned = userData?.todayEarned || appData.todayEarned;
-            const totalEarned = userData?.totalEarned || appData.totalEarned;
+            const balance = userData?.balance || 0;
+            const todayEarned = userData?.todayEarned || 0;
+            const totalEarned = userData?.totalEarned || 0;
             
             document.getElementById('bal').innerText = balance.toFixed(2);
             document.getElementById('today-earned').innerText = todayEarned.toFixed(2);
@@ -2234,15 +2320,14 @@
             }
             
             const amountToReceive = Math.floor(price * 0.7);
-            const currentBalance = userData?.balance || appData.balance;
+            const currentBalance = userData?.balance || 0;
             
             if (amountToReceive > currentBalance) {
-                return showNotification(`Yetersiz bakiye! Alabileceğiniz maksimum: ${currentBalance.toFixed(2)} R$`, "error");
+                return showNotification(`Yetersiz bakiye: ${currentBalance.toFixed(2)} R$`, "error");
             }
             
             try {
                 if (isFirebaseInitialized && currentUser?.uid) {
-                    // Firestore'a kaydet
                     await firestore.collection('withdrawals').add({
                         userId: currentUser.uid,
                         amount: amountToReceive,
@@ -2252,20 +2337,17 @@
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                     
-                    // Bakiyeyi güncelle
                     await firestore.collection('users').doc(currentUser.uid).update({
                         balance: firebase.firestore.FieldValue.increment(-amountToReceive)
                     });
                     
                     userData.balance -= amountToReceive;
                     
-                    showNotification(`GamePass çekim talebiniz alındı! ${amountToReceive} R$ onaylandıktan sonra hesabınıza geçecek.`, "success");
+                    showNotification(`${amountToReceive} R$ çekim talebiniz alındı!`, "success");
                     
-                    // Çekim geçmişine ekle
                     loadWithdrawalHistory();
                     updateDashboard();
                     
-                    // Formu temizle
                     document.getElementById('gamepass-url').value = '';
                     document.getElementById('gamepass-amount').value = '';
                     document.getElementById('gamepass-calc').style.display = 'none';
@@ -2300,14 +2382,13 @@
                             id: doc.id,
                             amount: data.amount,
                             status: data.status,
-                            date: data.createdAt?.toDate().toLocaleDateString('tr-TR') || new Date().toLocaleDateString('tr-TR'),
-                            type: 'gamepass'
+                            date: data.createdAt?.toDate().toLocaleDateString('tr-TR') || new Date().toLocaleDateString('tr-TR')
                         };
                     });
                 }
                 
                 if (withdrawals.length === 0) {
-                    history.innerHTML = `<div style="text-align:center; padding:15px; color:var(--sub); font-size:10px;">${translations[currentLanguage]['no_withdrawals'] || 'Henüz çekim yapılmadı'}</div>`;
+                    history.innerHTML = `<div style="text-align:center; padding:15px; color:var(--sub); font-size:10px;">Henüz çekim yapılmadı</div>`;
                     return;
                 }
                 
@@ -2345,7 +2426,7 @@
                 
             } catch (error) {
                 console.error("Çekim geçmişi yükleme hatası:", error);
-                history.innerHTML = `<div style="text-align:center; padding:15px; color:var(--sub); font-size:10px;">${translations[currentLanguage]['no_withdrawals'] || 'Henüz çekim yapılmadı'}</div>`;
+                history.innerHTML = `<div style="text-align:center; padding:15px; color:var(--sub); font-size:10px;">Henüz çekim yapılmadı</div>`;
             }
         }
         
@@ -2417,7 +2498,7 @@
                 document.getElementById('referral-earnings').textContent = referralEarnings.toFixed(2);
                 
                 if (referrals.length === 0) {
-                    history.innerHTML = `<div style="text-align:center; padding:15px; color:var(--sub); font-size:10px;">${translations[currentLanguage]['no_referrals'] || 'Henüz referans yok'}</div>`;
+                    history.innerHTML = `<div style="text-align:center; padding:15px; color:var(--sub); font-size:10px;">Henüz referans yok</div>`;
                     return;
                 }
                 
@@ -2436,7 +2517,7 @@
                 
             } catch (error) {
                 console.error("Referans geçmişi yükleme hatası:", error);
-                history.innerHTML = `<div style="text-align:center; padding:15px; color:var(--sub); font-size:10px;">${translations[currentLanguage]['no_referrals'] || 'Henüz referans yok'}</div>`;
+                history.innerHTML = `<div style="text-align:center; padding:15px; color:var(--sub); font-size:10px;">Henüz referans yok</div>`;
             }
         }
         
@@ -2451,11 +2532,9 @@
             if (!isAdmin || !isFirebaseInitialized) return;
             
             try {
-                // Toplam kullanıcı sayısı
                 const usersSnapshot = await firestore.collection('users').get();
                 document.getElementById('admin-total-users').textContent = usersSnapshot.size;
                 
-                // Bugünkü toplam kazanç
                 let todayEarnings = 0;
                 usersSnapshot.forEach(doc => {
                     const data = doc.data();
@@ -2463,13 +2542,11 @@
                 });
                 document.getElementById('admin-today-earnings').textContent = todayEarnings.toFixed(2);
                 
-                // Bekleyen çekimler
                 const pendingSnapshot = await firestore.collection('withdrawals')
                     .where('status', '==', 'pending')
                     .get();
                 document.getElementById('admin-pending-withdrawals').textContent = pendingSnapshot.size;
                 
-                // Toplam çekim sayısı
                 const withdrawalsSnapshot = await firestore.collection('withdrawals').get();
                 document.getElementById('admin-total-withdrawals').textContent = withdrawalsSnapshot.size;
                 
@@ -2487,7 +2564,7 @@
             
             switch(action) {
                 case 'manageUsers':
-                    title = translations[currentLanguage]['manage_users'] || "Kullanıcılar";
+                    title = translations[currentLanguage]['manage_users'];
                     content = `
                         <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; margin-top: 8px;">
                             <h5 style="margin:0 0 8px 0; font-size:11px;"><i class="fas fa-users"></i> ${title}</h5>
@@ -2504,7 +2581,7 @@
                     break;
                     
                 case 'viewLogs':
-                    title = translations[currentLanguage]['view_logs'] || "Loglar";
+                    title = translations[currentLanguage]['view_logs'];
                     content = `
                         <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; margin-top: 8px;">
                             <h5 style="margin:0 0 8px 0; font-size:11px;"><i class="fas fa-clipboard-list"></i> ${title}</h5>
@@ -2516,7 +2593,7 @@
                     break;
                     
                 case 'sendAnnouncement':
-                    title = translations[currentLanguage]['send_announcement'] || "Duyuru";
+                    title = translations[currentLanguage]['send_announcement'];
                     content = `
                         <div style="background: rgba(255,255,255,0.05); border-radius: 10px; padding: 10px; margin-top: 8px;">
                             <h5 style="margin:0 0 8px 0; font-size:11px;"><i class="fas fa-bullhorn"></i> ${title}</h5>
