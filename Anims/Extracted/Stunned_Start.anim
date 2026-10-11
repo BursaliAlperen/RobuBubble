@@ -1,8 +1,5 @@
 <roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
-	<Meta name="ExplicitAutoJoints">true</Meta>
-	<External>null</External>
-	<External>nil</External>
-	<Item class="KeyframeSequence" referent="RBXFC21CC39E3434F8E8FACD098C1D23A88">
+<Item class="KeyframeSequence" referent="RBXFC21CC39E3434F8E8FACD098C1D23A88">
 				<Properties>
 					<float name="AuthoredHipHeight">2</float>
 					<BinaryString name="GuidBinaryString">AAAAAAAAAAAAAAAAAAAAAA==</BinaryString>
