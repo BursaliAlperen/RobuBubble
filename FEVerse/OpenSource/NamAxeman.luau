@@ -18,6 +18,36 @@ local NECK_ACCESSORY_IDS: {[string]: boolean} = {
     ["87291559615126"] = true,
 }
 local AXE_ACCESSORY_ID = "16471816474"
+
+-- Centralized combat presentation config.
+-- Uses Roblox-hosted audio IDs; GitHub raw URLs cannot be assigned to Sound.SoundId.
+local AXE_SWING_SOUND_ID = "rbxassetid://12222216"
+local AXE_HIT_SOUND_ID = "rbxassetid://12222225"
+local AXE_SOUND_VOLUME = 0.65
+
+local function playAxeSound(assetId: string)
+    if assetId == "" or assetId == "rbxassetid://0" then
+        return
+    end
+    local parent = character or LOCAL_PLAYER.Character
+    local root = parent and (parent:FindFirstChild("HumanoidRootPart") or parent:FindFirstChild("Torso"))
+    if not root or not root:IsA("BasePart") then
+        return
+    end
+    local sound = Instance.new("Sound")
+    sound.Name = "NamAxemanSwingSound"
+    sound.SoundId = assetId
+    sound.Volume = AXE_SOUND_VOLUME
+    sound.RollOffMaxDistance = 70
+    sound.Parent = root
+    sound.Ended:Connect(function()
+        sound:Destroy()
+    end)
+    sound:Play()
+    task.delay(5, function()
+        if sound.Parent then sound:Destroy() end
+    end)
+end
 local SWING_DURATION = 0.38
 local AXE_OFFSET = CFrame.new(0, -0.65, -0.25)
 local NECK_OFFSET = CFrame.identity
@@ -203,6 +233,7 @@ local function swing()
         return
     end
     swingStartedAt = os.clock()
+    playAxeSound(AXE_SWING_SOUND_ID)
 end
 
 local function makeRoundButton(parent: Instance, name: string, label: string, position: UDim2, callback: () -> ())
