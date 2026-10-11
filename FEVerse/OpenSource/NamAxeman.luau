@@ -19,6 +19,23 @@ local NECK_ACCESSORY_IDS: {[string]: boolean} = {
 }
 local AXE_ACCESSORY_ID = "16471816474"
 
+local SWING_DURATION = 0.38
+local AXE_OFFSET = CFrame.new(0, -0.65, -0.25)
+local NECK_OFFSET = CFrame.identity
+
+local character: Model? = nil
+local humanoid: Humanoid? = nil
+local shoulder: Motor6D? = nil
+local shoulderBaseC0: CFrame? = nil
+local swingStartedAt = 0
+local updateConnection: RBXScriptConnection? = nil
+local inputConnection: RBXScriptConnection? = nil
+local characterConnection: RBXScriptConnection? = nil
+local accessoryConnections: {RBXScriptConnection} = {}
+local createdWelds: {WeldConstraint} = {}
+local mobileGui: ScreenGui? = nil
+local destroyed = false
+
 -- Centralized combat presentation config.
 -- Uses Roblox-hosted audio IDs; GitHub raw URLs cannot be assigned to Sound.SoundId.
 local AXE_SWING_SOUND_ID = "rbxassetid://12222216"
@@ -48,22 +65,6 @@ local function playAxeSound(assetId: string)
         if sound.Parent then sound:Destroy() end
     end)
 end
-local SWING_DURATION = 0.38
-local AXE_OFFSET = CFrame.new(0, -0.65, -0.25)
-local NECK_OFFSET = CFrame.identity
-
-local character: Model? = nil
-local humanoid: Humanoid? = nil
-local shoulder: Motor6D? = nil
-local shoulderBaseC0: CFrame? = nil
-local swingStartedAt = 0
-local updateConnection: RBXScriptConnection? = nil
-local inputConnection: RBXScriptConnection? = nil
-local characterConnection: RBXScriptConnection? = nil
-local accessoryConnections: {RBXScriptConnection} = {}
-local createdWelds: {WeldConstraint} = {}
-local mobileGui: ScreenGui? = nil
-local destroyed = false
 
 local function disconnect(connection: RBXScriptConnection?)
     if connection then
