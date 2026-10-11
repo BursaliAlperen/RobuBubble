@@ -2,6 +2,9 @@ name: Import FEVerse into RobuBubble
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/import-feverse.yml"
 
 permissions:
   contents: write
@@ -28,8 +31,6 @@ jobs:
           rm -rf FEVerse/.git
 
       - name: Commit imported files
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
