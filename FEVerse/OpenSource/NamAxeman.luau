@@ -1,276 +1,244 @@
--- [[ Nam Axeman : Reanimate ]] --
+-- [[ Nam Axeman : Hat Reanimate / cosmetic moveset ]]
+-- Local cosmetic controls only. No remote damage or player-fling behavior.
+-- Neck accessory IDs are matched explicitly; the axe accessory follows the right arm.
 
 local Reanimate_Settings = {
-	Frequency = 6,
-	Amplification = 6,
-	FrontOffset = 2.5,
+    Frequency = 6,
+    Amplification = 6,
+    FrontOffset = 2.5,
 }
 
 local NeckAccessories = {
-	88886554182275,
-	90788603154080,
-	120111604252410,
-	128893482026011,
-	87291559615126,
+    ["88886554182275"] = true,
+    ["90788603154080"] = true,
+    ["120111604252410"] = true,
+    ["128893482026011"] = true,
+    ["87291559615126"] = true,
 }
+local AxeAccessoryId = "16471816474"
 
-do
-	local ReanimateAxe
-	local Accessories = {}
-	local Aligns = {}
-	local Attachments = {}
-	local BindableEvent = nil
-	local Blacklist = {}
-	local Character = nil
-	local CurrentCamera = nil
-	local Rig = nil
-	local RigHumanoid = nil
-	local RigHumanoidRootPart = nil
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Workspace = game:GetService("Workspace")
+local LocalPlayer = Players.LocalPlayer
 
-	local CFrame = CFrame
-	local CFrameidentity = CFrame.identity
-	local CFramelookAt = CFrame.lookAt
-	local CFramenew = CFrame.new
-	local Vector3 = Vector3
-	local Vector3new = Vector3.new
-	local game = game
-	local Players = game:GetService("Players")
-	local LocalPlayer = Players.LocalPlayer
-	local Workspace = game:GetService("Workspace")
-	local RunService = game:GetService("RunService")
-	local StarterGui = game:GetService("StarterGui")
-	local UserInputService = game:GetService("UserInputService")
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local Rig
+local RigHumanoid
+local RigRoot
+local CharacterHumanoid
+local Aligns = {}
+local Connections = {}
+local MobileGui
+local SwingStarted = 0
+local SwingDuration = 0.38
+local RightShoulder
+local ShoulderC0
+local destroyed = false
 
-	local PostSimulation = RunService.PostSimulation
-	local PreRender = RunService.PreRender
-	local PreSimulation = RunService.PreSimulation
-	local CharacterAdded = LocalPlayer.CharacterAdded
-	local Mouse = LocalPlayer:GetMouse()
-	local Humanoid = nil
-
-	local table = table
-	local tableclear = table.clear
-	local tableinsert = table.insert
-	local mathsin = math.sin
-	local mathpi = math.pi
-	local osclock = os.clock
-
-	local FlingVelocity = Vector3new(16384, 16384, 16384)
-	local HatDropLinearVelocity = Vector3new(0, 27, 0)
-	local Vector3zero = Vector3new(0, 0, 0)
-
-	local FindFirstChildOfClassAndName = function(Parent, ClassName, Name)
-		for _, Child in ipairs(Parent:GetChildren()) do
-			if Child:IsA(ClassName) and Child.Name == Name then
-				return Child
-			end
-		end
-	end
-
-	local DetectNeckAccessories = function()
-		local detected = {}
-		if not Character then return detected end
-		for _, child in ipairs(Character:GetChildren()) do
-			if child:IsA("Accoutrement") then
-				local handle = FindFirstChildOfClassAndName(child, "BasePart", "Handle")
-				if handle then
-					tableinsert(detected, {
-						Part0 = handle,
-						Part1 = RigHumanoidRootPart,
-						Offset = CFrameidentity
-					})
-				end
-			end
-		end
-		return detected
-	end
-
-	local OnCharacterAdded = function(NewCharacter)
-		if NewCharacter ~= Rig then
-			Character = NewCharacter
-			tableclear(Aligns)
-			tableclear(Blacklist)
-
-			local HRP = Character:WaitForChild("HumanoidRootPart")
-			Humanoid = Character:WaitForChild("Humanoid")
-
-			RigHumanoidRootPart.CFrame = HRP.CFrame
-
-			local neckAligns = DetectNeckAccessories()
-			for _, align in ipairs(neckAligns) do
-				tableinsert(Aligns, align)
-			end
-
-			task.spawn(function()
-				if HRP and Humanoid then
-					while Character and Humanoid.Health > 0 do
-						HRP.AssemblyLinearVelocity = HatDropLinearVelocity
-						task.wait()
-					end
-				end
-			end)
-
-			Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-		end
-	end
-
-	local OnPostSimulation = function()
-		if Rig and RigHumanoid and Humanoid then
-			RigHumanoid:Move(Humanoid.MoveDirection)
-			RigHumanoid.Jump = Humanoid.Jump
-		end
-
-		local Axis = 27 + mathsin(osclock())
-
-		for _, align in ipairs(Aligns) do
-			local Part0 = align.Part0
-			local Part1 = align.Part1
-
-			if Part0 and Part0.ReceiveAge == 0 and Part0:IsDescendantOf(Workspace) then
-				Part0.AssemblyAngularVelocity = Vector3zero
-				local LinearVelocity = Part1.AssemblyLinearVelocity * Axis
-				Part0.AssemblyLinearVelocity = Vector3new(LinearVelocity.X, Axis, LinearVelocity.Z)
-				Part0.CFrame = Part1.CFrame * align.Offset
-			end
-		end
-	end
-
-	local OnInputBegan = function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			local target = Mouse.Target
-			if target then
-				local model = target:FindFirstAncestorOfClass("Model")
-				if model and model:FindFirstChildOfClass("Humanoid") and model ~= Character and model ~= Rig then
-					local targetHRP = FindFirstChildOfClassAndName(model, "BasePart", "HumanoidRootPart")
-					if targetHRP then
-						while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) and targetHRP:IsDescendantOf(Workspace) do
-							targetHRP.AssemblyLinearVelocity = FlingVelocity
-							targetHRP.AssemblyAngularVelocity = FlingVelocity
-
-							local Time = osclock()
-							local offset = Vector3new(mathsin(Time * mathpi * 2 * Reanimate_Settings.Frequency) * Reanimate_Settings.Amplification, 0, 0)
-							targetHRP.CFrame = CFrame.new(targetHRP.Position + offset)
-
-							task.wait()
-						end
-						targetHRP.AssemblyLinearVelocity = Vector3zero
-						targetHRP.AssemblyAngularVelocity = Vector3zero
-					end
-				end
-			end
-		end
-	end
-
-	local CreateMobileUI = function()
-		local gui = Instance.new("ScreenGui")
-		gui.Name = "AxemanMobileUI"
-		gui.ResetOnSpawn = false
-		gui.Parent = LocalPlayer:FindFirstChildOfClass("PlayerGui")
-
-		local function createButton(name, pos, text)
-			local b = Instance.new("TextButton")
-			b.Name = name
-			b.Size = UDim2.new(0, 46, 0, 46)
-			b.Position = pos
-			b.Text = text
-			b.TextSize = 17
-			b.Font = Enum.Font.GothamBold
-			b.TextColor3 = Color3.fromRGB(255, 255, 255)
-			b.BackgroundColor3 = Color3.fromRGB(42, 42, 42)
-			b.BorderSizePixel = 0
-			b.Parent = gui
-
-			local corner = Instance.new("UICorner")
-			corner.CornerRadius = UDim.new(0, 12)
-			corner.Parent = b
-
-			local stroke = Instance.new("UIStroke")
-			stroke.Color = Color3.fromRGB(100, 100, 100)
-			stroke.Thickness = 1.4
-			stroke.Parent = b
-
-			return b
-		end
-
-		local attackBtn = createButton("AttackBtn", UDim2.new(0.88, 0, 0.62, 0), "⚔")
-		attackBtn.MouseButton1Down:Connect(function()
-			if Humanoid then
-				Humanoid:TakeDamage(10)
-			end
-		end)
-
-		local jumpBtn = createButton("JumpBtn", UDim2.new(0.88, 0, 0.74, 0), "⤒")
-		jumpBtn.MouseButton1Down:Connect(function()
-			if RigHumanoid then
-				RigHumanoid.Jump = true
-			end
-		end)
-
-		local crouchBtn = createButton("CrouchBtn", UDim2.new(0.88, 0, 0.86, 0), "↓")
-		crouchBtn.MouseButton1Down:Connect(function()
-			if RigHumanoid then
-				RigHumanoid.WalkSpeed = 8
-				task.delay(0.2, function()
-					if RigHumanoid then
-						RigHumanoid.WalkSpeed = 16
-					end
-				end)
-			end
-		end)
-	end
-
-	local Start = function()
-		local desc = Instance.new("HumanoidDescription")
-		local model = Players:CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R6)
-		Rig = model
-		Rig.Name = "NamAxeman"
-		RigHumanoid = Rig.Humanoid
-		RigHumanoidRootPart = Rig.HumanoidRootPart
-		Rig.Parent = Workspace
-
-		for _, desc in ipairs(Rig:GetDescendants()) do
-			if desc:IsA("Attachment") then
-				Attachments[desc.Name] = desc
-			elseif desc:IsA("BasePart") then
-				desc.CanCollide = false
-			end
-		end
-
-		local CreateObject = function(Name)
-			local Part = Instance.new("Part")
-			Part.Name = Name
-			Part.Massless = true
-			Part.CanCollide = true
-			Part.Transparency = 1
-			Part.Size = Vector3new(0.1, 0.1, 0.1)
-			Part.Anchored = true
-			Part.Parent = Rig
-			return Part
-		end
-
-		ReanimateAxe = CreateObject("Reanimate_Axe")
-
-		LocalPlayer.Character = Rig
-
-		CharacterAdded:Connect(OnCharacterAdded)
-		PostSimulation:Connect(OnPostSimulation)
-		PreSimulation:Connect(function()
-			if Rig then
-				for _, part in ipairs(Rig:GetChildren()) do
-					if part:IsA("BasePart") then
-						part.CanCollide = false
-					end
-				end
-			end
-		end)
-		UserInputService.InputBegan:Connect(OnInputBegan)
-
-		CreateMobileUI()
-
-		if LocalPlayer.Character then
-			OnCharacterAdded(LocalPlayer.Character)
-		end
-	end
-
-	Start()
+local function assetIdMatches(value, id)
+    return value ~= nil and string.find(tostring(value), id, 1, true) ~= nil
 end
+
+local function getAssetFields(accessory)
+    local fields = { accessory.Name }
+    local handle = accessory:FindFirstChild("Handle")
+    if not handle then return fields end
+    if handle:IsA("MeshPart") then
+        table.insert(fields, handle.MeshId)
+        table.insert(fields, handle.TextureID)
+    end
+    for _, object in ipairs(handle:GetDescendants()) do
+        if object:IsA("SpecialMesh") then
+            table.insert(fields, object.MeshId)
+            table.insert(fields, object.TextureId)
+        elseif object:IsA("MeshPart") then
+            table.insert(fields, object.MeshId)
+            table.insert(fields, object.TextureID)
+        end
+    end
+    return fields
+end
+
+local function accessoryHasId(accessory, id)
+    for _, value in ipairs(getAssetFields(accessory)) do
+        if assetIdMatches(value, id) then return true end
+    end
+    return false
+end
+
+local function findPart(model, name)
+    return model and (model:FindFirstChild(name, true))
+end
+
+local function rebuildAccessoryAligns(character)
+    table.clear(Aligns)
+    if not character or not Rig then return end
+    local rightArm = findPart(Rig, "Right Arm")
+    for _, accessory in ipairs(character:GetChildren()) do
+        if accessory:IsA("Accessory") or accessory:IsA("Accoutrement") then
+            local handle = accessory:FindFirstChild("Handle")
+            if handle and handle:IsA("BasePart") then
+                local targetPart
+                local isNeck = false
+                for id in pairs(NeckAccessories) do
+                    if accessoryHasId(accessory, id) then
+                        isNeck = true
+                        break
+                    end
+                end
+                if isNeck then
+                    targetPart = RigRoot
+                elseif accessoryHasId(accessory, AxeAccessoryId) then
+                    targetPart = rightArm or RigRoot
+                end
+                if targetPart then
+                    table.insert(Aligns, {
+                        Part0 = handle,
+                        Part1 = targetPart,
+                        Offset = isNeck and CFrame.identity or CFrame.new(0, -0.65, -0.25),
+                    })
+                end
+            end
+        end
+    end
+end
+
+local function swing()
+    if not RightShoulder then return end
+    SwingStarted = os.clock()
+end
+
+local function makeButton(parent, name, label, position, callback)
+    local button = Instance.new("TextButton")
+    button.Name = name
+    button.AnchorPoint = Vector2.new(1, 1)
+    button.Position = position
+    button.Size = UDim2.fromOffset(48, 48)
+    button.Text = label
+    button.TextSize = 15
+    button.Font = Enum.Font.GothamBold
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = Color3.fromRGB(42, 45, 54)
+    button.BorderSizePixel = 0
+    button.AutoButtonColor = true
+    button.Visible = UserInputService.TouchEnabled
+    button.Parent = parent
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(1, 0)
+    corner.Parent = button
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Color3.fromRGB(190, 190, 200)
+    stroke.Thickness = 1.4
+    stroke.Parent = button
+
+    button.Activated:Connect(callback)
+    return button
+end
+
+local function createMobileUI()
+    local playerGui = LocalPlayer:FindFirstChildOfClass("PlayerGui")
+    if not playerGui then return end
+    local previous = playerGui:FindFirstChild("AxemanMobileUI")
+    if previous then previous:Destroy() end
+
+    MobileGui = Instance.new("ScreenGui")
+    MobileGui.Name = "AxemanMobileUI"
+    MobileGui.ResetOnSpawn = false
+    MobileGui.IgnoreGuiInset = true
+    MobileGui.DisplayOrder = 40
+    MobileGui.Parent = playerGui
+
+    makeButton(MobileGui, "AxeAttack", "AXE", UDim2.new(1, -24, 1, -145), swing)
+    makeButton(MobileGui, "AxeJump", "JUMP", UDim2.new(1, -24, 1, -205), function()
+        if RigHumanoid then RigHumanoid.Jump = true end
+    end)
+end
+
+local function bindCharacter(character)
+    Character = character
+    CharacterHumanoid = character:WaitForChild("Humanoid", 10)
+    if RigRoot and character:FindFirstChild("HumanoidRootPart") then
+        RigRoot.CFrame = character.HumanoidRootPart.CFrame
+    end
+    rebuildAccessoryAligns(character)
+end
+
+local function start()
+    local description = Instance.new("HumanoidDescription")
+    Rig = Players:CreateHumanoidModelFromDescription(description, Enum.HumanoidRigType.R6)
+    Rig.Name = "NamAxeman"
+    RigHumanoid = Rig:WaitForChild("Humanoid")
+    RigRoot = Rig:WaitForChild("HumanoidRootPart")
+    Rig.Parent = Workspace
+
+    for _, object in ipairs(Rig:GetDescendants()) do
+        if object:IsA("BasePart") then
+            object.CanCollide = false
+        end
+    end
+    RightShoulder = findPart(Rig, "Right Shoulder")
+    ShoulderC0 = RightShoulder and RightShoulder.C0
+
+    LocalPlayer.Character = Rig
+    bindCharacter(Character)
+    table.insert(Connections, LocalPlayer.CharacterAdded:Connect(bindCharacter))
+
+    table.insert(Connections, RunService.PostSimulation:Connect(function()
+        if destroyed then return end
+        if Rig and RigHumanoid and CharacterHumanoid and CharacterHumanoid.Health > 0 then
+            RigHumanoid:Move(CharacterHumanoid.MoveDirection)
+            RigHumanoid.Jump = CharacterHumanoid.Jump
+        end
+        local axis = 27 + math.sin(os.clock())
+        for _, align in ipairs(Aligns) do
+            local part0, part1 = align.Part0, align.Part1
+            if part0 and part1 and part0:IsDescendantOf(Workspace) and part1:IsDescendantOf(Workspace) then
+                part0.AssemblyAngularVelocity = Vector3.zero
+                part0.AssemblyLinearVelocity = Vector3.new(part1.AssemblyLinearVelocity.X, axis, part1.AssemblyLinearVelocity.Z)
+                part0.CFrame = part1.CFrame * align.Offset
+            end
+        end
+        if RightShoulder and ShoulderC0 then
+            local elapsed = os.clock() - SwingStarted
+            if SwingStarted > 0 and elapsed < SwingDuration then
+                local alpha = math.clamp(elapsed / SwingDuration, 0, 1)
+                RightShoulder.C0 = ShoulderC0 * CFrame.Angles(math.sin(alpha * math.pi) * math.rad(-100), 0, math.sin(alpha * math.pi) * math.rad(16))
+            else
+                RightShoulder.C0 = ShoulderC0
+                SwingStarted = 0
+            end
+        end
+    end))
+
+    table.insert(Connections, RunService.PreSimulation:Connect(function()
+        if Rig then
+            for _, part in ipairs(Rig:GetChildren()) do
+                if part:IsA("BasePart") then part.CanCollide = false end
+            end
+        end
+    end))
+
+    table.insert(Connections, UserInputService.InputBegan:Connect(function(input, processed)
+        if processed then return end
+        if input.KeyCode == Enum.KeyCode.Q then swing() end
+    end))
+
+    createMobileUI()
+end
+
+local function cleanup()
+    destroyed = true
+    for _, connection in ipairs(Connections) do
+        pcall(function() connection:Disconnect() end)
+    end
+    if MobileGui then MobileGui:Destroy() end
+    if RightShoulder and ShoulderC0 then RightShoulder.C0 = ShoulderC0 end
+    table.clear(Connections)
+    table.clear(Aligns)
+end
+
+start()
