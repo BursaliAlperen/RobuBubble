@@ -1,126 +1,221 @@
--- [[ Nam Axeman : Hat Reanimate / cosmetic moveset ]]
--- Local cosmetic controls only. No remote damage or player-fling behavior.
--- Neck accessory IDs are matched explicitly; the axe accessory follows the right arm.
+--!strict
+-- Nam Axeman - R6 cosmetic moveset
+-- Local-only visual accessory attachment and arm swing.
+-- No remote damage, fling, self-damage, or character replacement.
+-- Note: Roblox does not expose a reliable catalog asset ID on every live Accessory.
+-- Detection checks SourceAssetId (when available), accessory name, and mesh/texture IDs.
 
-local Reanimate_Settings = {
-    Frequency = 6,
-    Amplification = 6,
-    FrontOffset = 2.5,
-}
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
-local NeckAccessories = {
+local LOCAL_PLAYER = Players.LocalPlayer
+local NECK_ACCESSORY_IDS: {[string]: boolean} = {
     ["88886554182275"] = true,
     ["90788603154080"] = true,
     ["120111604252410"] = true,
     ["128893482026011"] = true,
     ["87291559615126"] = true,
 }
-local AxeAccessoryId = "16471816474"
+local AXE_ACCESSORY_ID = "16471816474"
+local SWING_DURATION = 0.38
+local AXE_OFFSET = CFrame.new(0, -0.65, -0.25)
+local NECK_OFFSET = CFrame.identity
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
-local Workspace = game:GetService("Workspace")
-local LocalPlayer = Players.LocalPlayer
-
-local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
-local Rig
-local RigHumanoid
-local RigRoot
-local CharacterHumanoid
-local Aligns = {}
-local Connections = {}
-local MobileGui
-local SwingStarted = 0
-local SwingDuration = 0.38
-local RightShoulder
-local ShoulderC0
+local character: Model? = nil
+local humanoid: Humanoid? = nil
+local shoulder: Motor6D? = nil
+local shoulderBaseC0: CFrame? = nil
+local swingStartedAt = 0
+local updateConnection: RBXScriptConnection? = nil
+local inputConnection: RBXScriptConnection? = nil
+local characterConnection: RBXScriptConnection? = nil
+local accessoryConnections: {RBXScriptConnection} = {}
+local createdWelds: {WeldConstraint} = {}
+local mobileGui: ScreenGui? = nil
 local destroyed = false
 
-local function assetIdMatches(value, id)
-    return value ~= nil and string.find(tostring(value), id, 1, true) ~= nil
+local function disconnect(connection: RBXScriptConnection?)
+    if connection then
+        connection:Disconnect()
+    end
 end
 
-local function getAssetFields(accessory)
-    local fields = { accessory.Name }
-    local handle = accessory:FindFirstChild("Handle")
-    if not handle then return fields end
-    if handle:IsA("MeshPart") then
-        table.insert(fields, handle.MeshId)
-        table.insert(fields, handle.TextureID)
+local function clearAccessoryWelds()
+    for _, connection in ipairs(accessoryConnections) do
+        connection:Disconnect()
     end
-    for _, object in ipairs(handle:GetDescendants()) do
-        if object:IsA("SpecialMesh") then
-            table.insert(fields, object.MeshId)
-            table.insert(fields, object.TextureId)
-        elseif object:IsA("MeshPart") then
-            table.insert(fields, object.MeshId)
-            table.insert(fields, object.TextureID)
+    table.clear(accessoryConnections)
+
+    for _, weld in ipairs(createdWelds) do
+        if weld.Parent then
+            weld:Destroy()
+        end
+    end
+    table.clear(createdWelds)
+end
+
+local function safeSourceAssetId(instance: Instance): string?
+    local ok, value = pcall(function()
+        return (instance :: any).SourceAssetId
+    end)
+    if ok and value ~= nil then
+        return tostring(value)
+    end
+    return nil
+end
+
+local function accessoryFields(accessory: Accessory): {string}
+    local fields = {accessory.Name}
+    local sourceId = safeSourceAssetId(accessory)
+    if sourceId then
+        table.insert(fields, sourceId)
+    end
+
+    local handle = accessory:FindFirstChild("Handle")
+    if not handle then
+        return fields
+    end
+
+    local function addProperty(object: Instance, propertyName: string)
+        local ok, value = pcall(function()
+            return (object :: any)[propertyName]
+        end)
+        if ok and value ~= nil then
+            table.insert(fields, tostring(value))
+        end
+    end
+
+    addProperty(handle, "MeshId")
+    addProperty(handle, "TextureID")
+    for _, descendant in ipairs(handle:GetDescendants()) do
+        if descendant:IsA("SpecialMesh") then
+            addProperty(descendant, "MeshId")
+            addProperty(descendant, "TextureId")
+        elseif descendant:IsA("MeshPart") then
+            addProperty(descendant, "MeshId")
+            addProperty(descendant, "TextureID")
         end
     end
     return fields
 end
 
-local function accessoryHasId(accessory, id)
-    for _, value in ipairs(getAssetFields(accessory)) do
-        if assetIdMatches(value, id) then return true end
+local function accessoryMatches(accessory: Accessory, id: string): boolean
+    for _, field in ipairs(accessoryFields(accessory)) do
+        if string.find(field, id, 1, true) then
+            return true
+        end
     end
     return false
 end
 
-local function findPart(model, name)
-    return model and (model:FindFirstChild(name, true))
+local function findBodyPart(model: Model, names: {string}): BasePart?
+    for _, name in ipairs(names) do
+        local part = model:FindFirstChild(name)
+        if part and part:IsA("BasePart") then
+            return part
+        end
+    end
+    return nil
 end
 
-local function rebuildAccessoryAligns(character)
-    table.clear(Aligns)
-    if not character or not Rig then return end
-    local rightArm = findPart(Rig, "Right Arm")
-    for _, accessory in ipairs(character:GetChildren()) do
-        if accessory:IsA("Accessory") or accessory:IsA("Accoutrement") then
-            local handle = accessory:FindFirstChild("Handle")
-            if handle and handle:IsA("BasePart") then
-                local targetPart
-                local isNeck = false
-                for id in pairs(NeckAccessories) do
-                    if accessoryHasId(accessory, id) then
-                        isNeck = true
-                        break
-                    end
+local function weldAccessory(accessory: Accessory, target: BasePart, offset: CFrame)
+    local handle = accessory:FindFirstChild("Handle")
+    if not handle or not handle:IsA("BasePart") then
+        warn("[Nam Axeman] Accessory has no BasePart Handle:", accessory.Name)
+        return
+    end
+
+    for _, descendant in ipairs(handle:GetChildren()) do
+        if descendant:IsA("Weld") or descendant:IsA("WeldConstraint") or descendant:IsA("Motor6D") then
+            descendant:Destroy()
+        end
+    end
+
+    handle.Anchored = false
+    handle.CanCollide = false
+    handle.CanTouch = false
+    handle.CanQuery = false
+    handle.Massless = true
+    handle.CFrame = target.CFrame * offset
+
+    local weld = Instance.new("WeldConstraint")
+    weld.Name = "NamAxemanAccessoryWeld"
+    weld.Part0 = target
+    weld.Part1 = handle
+    weld.Parent = handle
+    table.insert(createdWelds, weld)
+end
+
+local function attachKnownAccessories(model: Model)
+    clearAccessoryWelds()
+
+    local torso = findBodyPart(model, {"Torso", "UpperTorso", "HumanoidRootPart"})
+    local rightArm = findBodyPart(model, {"Right Arm", "RightHand", "RightLowerArm"})
+    if not torso then
+        warn("[Nam Axeman] Could not find torso/root part.")
+        return
+    end
+
+    for _, child in ipairs(model:GetChildren()) do
+        if child:IsA("Accessory") then
+            local isNeckAccessory = false
+            for id in pairs(NECK_ACCESSORY_IDS) do
+                if accessoryMatches(child, id) then
+                    isNeckAccessory = true
+                    break
                 end
-                if isNeck then
-                    targetPart = RigRoot
-                elseif accessoryHasId(accessory, AxeAccessoryId) then
-                    targetPart = rightArm or RigRoot
-                end
-                if targetPart then
-                    table.insert(Aligns, {
-                        Part0 = handle,
-                        Part1 = targetPart,
-                        Offset = isNeck and CFrame.identity or CFrame.new(0, -0.65, -0.25),
-                    })
-                end
+            end
+
+            if isNeckAccessory then
+                weldAccessory(child, torso, NECK_OFFSET)
+            elseif accessoryMatches(child, AXE_ACCESSORY_ID) then
+                weldAccessory(child, rightArm or torso, AXE_OFFSET)
             end
         end
     end
+
+    table.insert(accessoryConnections, model.ChildAdded:Connect(function(child)
+        if child:IsA("Accessory") then
+            task.defer(function()
+                if destroyed or not model.Parent then
+                    return
+                end
+                local isNeckAccessory = false
+                for id in pairs(NECK_ACCESSORY_IDS) do
+                    if accessoryMatches(child, id) then
+                        isNeckAccessory = true
+                        break
+                    end
+                end
+                if isNeckAccessory then
+                    weldAccessory(child, torso, NECK_OFFSET)
+                elseif accessoryMatches(child, AXE_ACCESSORY_ID) then
+                    weldAccessory(child, rightArm or torso, AXE_OFFSET)
+                end
+            end)
+        end
+    end))
 end
 
 local function swing()
-    if not RightShoulder then return end
-    SwingStarted = os.clock()
+    if not shoulder or not shoulderBaseC0 then
+        return
+    end
+    swingStartedAt = os.clock()
 end
 
-local function makeButton(parent, name, label, position, callback)
+local function makeRoundButton(parent: Instance, name: string, label: string, position: UDim2, callback: () -> ())
     local button = Instance.new("TextButton")
     button.Name = name
     button.AnchorPoint = Vector2.new(1, 1)
     button.Position = position
-    button.Size = UDim2.fromOffset(48, 48)
+    button.Size = UDim2.fromOffset(50, 50)
     button.Text = label
-    button.TextSize = 15
+    button.TextSize = 12
     button.Font = Enum.Font.GothamBold
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.BackgroundColor3 = Color3.fromRGB(42, 45, 54)
+    button.BackgroundColor3 = Color3.fromRGB(38, 42, 51)
     button.BorderSizePixel = 0
     button.AutoButtonColor = true
     button.Visible = UserInputService.TouchEnabled
@@ -131,114 +226,123 @@ local function makeButton(parent, name, label, position, callback)
     corner.Parent = button
 
     local stroke = Instance.new("UIStroke")
-    stroke.Color = Color3.fromRGB(190, 190, 200)
-    stroke.Thickness = 1.4
+    stroke.Color = Color3.fromRGB(190, 198, 210)
+    stroke.Thickness = 1.25
     stroke.Parent = button
 
     button.Activated:Connect(callback)
     return button
 end
 
-local function createMobileUI()
-    local playerGui = LocalPlayer:FindFirstChildOfClass("PlayerGui")
-    if not playerGui then return end
-    local previous = playerGui:FindFirstChild("AxemanMobileUI")
-    if previous then previous:Destroy() end
+local function buildMobileUI()
+    local playerGui = LOCAL_PLAYER:FindFirstChildOfClass("PlayerGui")
+    if not playerGui then
+        return
+    end
 
-    MobileGui = Instance.new("ScreenGui")
-    MobileGui.Name = "AxemanMobileUI"
-    MobileGui.ResetOnSpawn = false
-    MobileGui.IgnoreGuiInset = true
-    MobileGui.DisplayOrder = 40
-    MobileGui.Parent = playerGui
+    local oldGui = playerGui:FindFirstChild("NamAxemanMobileUI")
+    if oldGui then
+        oldGui:Destroy()
+    end
 
-    makeButton(MobileGui, "AxeAttack", "AXE", UDim2.new(1, -24, 1, -145), swing)
-    makeButton(MobileGui, "AxeJump", "JUMP", UDim2.new(1, -24, 1, -205), function()
-        if RigHumanoid then RigHumanoid.Jump = true end
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "NamAxemanMobileUI"
+    gui.ResetOnSpawn = false
+    gui.IgnoreGuiInset = true
+    gui.DisplayOrder = 40
+    gui.Parent = playerGui
+    mobileGui = gui
+
+    makeRoundButton(gui, "AxeAttack", "AXE · Q", UDim2.new(1, -22, 1, -142), swing)
+    makeRoundButton(gui, "AxeJump", "JUMP", UDim2.new(1, -22, 1, -202), function()
+        if humanoid and humanoid.Health > 0 then
+            humanoid.Jump = true
+        end
     end)
 end
 
-local function bindCharacter(character)
-    Character = character
-    CharacterHumanoid = character:WaitForChild("Humanoid", 10)
-    if RigRoot and character:FindFirstChild("HumanoidRootPart") then
-        RigRoot.CFrame = character.HumanoidRootPart.CFrame
-    end
-    rebuildAccessoryAligns(character)
-end
+local function bindCharacter(newCharacter: Model)
+    clearAccessoryWelds()
+    character = newCharacter
+    humanoid = newCharacter:WaitForChild("Humanoid", 10) :: Humanoid?
+    shoulder = nil
+    shoulderBaseC0 = nil
+    swingStartedAt = 0
 
-local function start()
-    local description = Instance.new("HumanoidDescription")
-    Rig = Players:CreateHumanoidModelFromDescription(description, Enum.HumanoidRigType.R6)
-    Rig.Name = "NamAxeman"
-    RigHumanoid = Rig:WaitForChild("Humanoid")
-    RigRoot = Rig:WaitForChild("HumanoidRootPart")
-    Rig.Parent = Workspace
-
-    for _, object in ipairs(Rig:GetDescendants()) do
-        if object:IsA("BasePart") then
-            object.CanCollide = false
+    if humanoid then
+        local torso = findBodyPart(newCharacter, {"Torso"})
+        if torso then
+            local motor = torso:FindFirstChild("Right Shoulder")
+            if motor and motor:IsA("Motor6D") then
+                shoulder = motor
+                shoulderBaseC0 = motor.C0
+            end
         end
     end
-    RightShoulder = findPart(Rig, "Right Shoulder")
-    ShoulderC0 = RightShoulder and RightShoulder.C0
 
-    LocalPlayer.Character = Rig
-    bindCharacter(Character)
-    table.insert(Connections, LocalPlayer.CharacterAdded:Connect(bindCharacter))
-
-    table.insert(Connections, RunService.PostSimulation:Connect(function()
-        if destroyed then return end
-        if Rig and RigHumanoid and CharacterHumanoid and CharacterHumanoid.Health > 0 then
-            RigHumanoid:Move(CharacterHumanoid.MoveDirection)
-            RigHumanoid.Jump = CharacterHumanoid.Jump
-        end
-        local axis = 27 + math.sin(os.clock())
-        for _, align in ipairs(Aligns) do
-            local part0, part1 = align.Part0, align.Part1
-            if part0 and part1 and part0:IsDescendantOf(Workspace) and part1:IsDescendantOf(Workspace) then
-                part0.AssemblyAngularVelocity = Vector3.zero
-                part0.AssemblyLinearVelocity = Vector3.new(part1.AssemblyLinearVelocity.X, axis, part1.AssemblyLinearVelocity.Z)
-                part0.CFrame = part1.CFrame * align.Offset
-            end
-        end
-        if RightShoulder and ShoulderC0 then
-            local elapsed = os.clock() - SwingStarted
-            if SwingStarted > 0 and elapsed < SwingDuration then
-                local alpha = math.clamp(elapsed / SwingDuration, 0, 1)
-                RightShoulder.C0 = ShoulderC0 * CFrame.Angles(math.sin(alpha * math.pi) * math.rad(-100), 0, math.sin(alpha * math.pi) * math.rad(16))
-            else
-                RightShoulder.C0 = ShoulderC0
-                SwingStarted = 0
-            end
-        end
-    end))
-
-    table.insert(Connections, RunService.PreSimulation:Connect(function()
-        if Rig then
-            for _, part in ipairs(Rig:GetChildren()) do
-                if part:IsA("BasePart") then part.CanCollide = false end
-            end
-        end
-    end))
-
-    table.insert(Connections, UserInputService.InputBegan:Connect(function(input, processed)
-        if processed then return end
-        if input.KeyCode == Enum.KeyCode.Q then swing() end
-    end))
-
-    createMobileUI()
+    attachKnownAccessories(newCharacter)
 end
 
 local function cleanup()
-    destroyed = true
-    for _, connection in ipairs(Connections) do
-        pcall(function() connection:Disconnect() end)
+    if destroyed then
+        return
     end
-    if MobileGui then MobileGui:Destroy() end
-    if RightShoulder and ShoulderC0 then RightShoulder.C0 = ShoulderC0 end
-    table.clear(Connections)
-    table.clear(Aligns)
+    destroyed = true
+    disconnect(updateConnection)
+    disconnect(inputConnection)
+    disconnect(characterConnection)
+    clearAccessoryWelds()
+
+    if shoulder and shoulderBaseC0 and shoulder.Parent then
+        shoulder.C0 = shoulderBaseC0
+    end
+    if mobileGui then
+        mobileGui:Destroy()
+        mobileGui = nil
+    end
+end
+
+local function start()
+    local currentCharacter = LOCAL_PLAYER.Character or LOCAL_PLAYER.CharacterAdded:Wait()
+    bindCharacter(currentCharacter)
+    buildMobileUI()
+
+    characterConnection = LOCAL_PLAYER.CharacterAdded:Connect(function(newCharacter)
+        if not destroyed then
+            bindCharacter(newCharacter)
+        end
+    end)
+
+    inputConnection = UserInputService.InputBegan:Connect(function(input, processed)
+        if processed or destroyed then
+            return
+        end
+        if input.KeyCode == Enum.KeyCode.Q then
+            swing()
+        elseif input.KeyCode == Enum.KeyCode.Space and UserInputService.TouchEnabled then
+            if humanoid and humanoid.Health > 0 then
+                humanoid.Jump = true
+            end
+        end
+    end)
+
+    updateConnection = RunService.PreSimulation:Connect(function()
+        if destroyed or not shoulder or not shoulderBaseC0 then
+            return
+        end
+
+        local elapsed = os.clock() - swingStartedAt
+        if swingStartedAt > 0 and elapsed < SWING_DURATION then
+            local alpha = math.clamp(elapsed / SWING_DURATION, 0, 1)
+            local curve = math.sin(alpha * math.pi)
+            shoulder.C0 = shoulderBaseC0 * CFrame.Angles(math.rad(-100) * curve, 0, math.rad(16) * curve)
+        else
+            shoulder.C0 = shoulderBaseC0
+            swingStartedAt = 0
+        end
+    end)
+
+    script.Destroying:Connect(cleanup)
 end
 
 start()
